@@ -284,9 +284,9 @@
       <button class="filter-btn active" onclick="filterRecords('全部', this)">全部</button>
       <button class="filter-btn" onclick="filterRecords('老公', this)">老公</button>
       <button class="filter-btn" onclick="filterRecords('老婆', this)">老婆</button>
+      <button class="filter-btn" onclick="filterRecords('Ian', this)">👶 Ian</button>
       <button class="filter-btn" onclick="filterRecords('餐飲', this)">餐飲</button>
       <button class="filter-btn" onclick="filterRecords('購物', this)">購物</button>
-      <button class="filter-btn" onclick="filterRecords('Ian', this)">👶 Ian</button>
     </div>
     <div class="records-list" id="recordsList">
       <div class="loading-state">載入中...</div>
@@ -299,11 +299,11 @@
 
 <script>
   // ★ 把你的 Apps Script 網址貼在這裡
-  const SCRIPT_URL = 'https://script.google.com/macros/s/請貼上你的網址/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz40e9YH54JwbelO_jgYVwn8ffwSYaDmTJ0DOsn24PFWgP5sab0WW6uLipM9PrM1074/exec';
 
   let records = [];
   let whoSelected = '老公';
-  let catSelected = '餐飲';
+  let catSelected = 'Ian';
   let currentFilter = '全部';
   let currentMonth = '';
   let availableMonths = [];
@@ -480,7 +480,7 @@
     document.getElementById('statHusband').textContent = '$' + husband.toLocaleString();
     document.getElementById('statWife').textContent = '$' + wife.toLocaleString();
 
-    const cats = ['餐飲','購物','帳單/水電','娛樂','醫療','奕安專區','其他'];
+    const cats = ['Ian','餐飲','購物','帳單','娛樂','醫療','其他'];
     const breakdown = document.getElementById('catBreakdown');
     const rows = cats.map(cat => {
       const amt = records.filter(r => r.category === cat).reduce((s, r) => s + Number(r.amount), 0);
