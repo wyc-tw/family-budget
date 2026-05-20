@@ -94,7 +94,8 @@
 
   .field { margin-bottom: 14px; }
   .field label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
-  .field input, .field select, .field textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: var(--sans); color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s; }
+  .field input, .field select, .field textarea { width: 100%; max-width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: var(--sans); color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s; -webkit-appearance: none; appearance: none; }
+  .field input[type="date"] { display: block; min-width: 0; }
   .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); background: white; }
   .field textarea { resize: none; height: 60px; }
 
@@ -299,7 +300,7 @@
 
 <script>
   // ★ 把你的 Apps Script 網址貼在這裡
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz40e9YH54JwbelO_jgYVwn8ffwSYaDmTJ0DOsn24PFWgP5sab0WW6uLipM9PrM1074/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyPV4FczO1TzdqQXzwNg1HB8ADkvsoZAktuVADRiRYW-4dwd9jQsoPvdtkBJWA_PNx6/exec';
 
   let records = [];
   let whoSelected = '老公';
