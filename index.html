@@ -223,7 +223,7 @@
       <div class="field">
         <label>分類</label>
         <div class="cat-grid" id="catGrid">
-          <button class="cat-pill active" data-cat="Ian" onclick="selectCat(this)">👶 Ian</button>
+          <button class="cat-pill active" data-cat="奕安" onclick="selectCat(this)">👶 奕安</button>
           <button class="cat-pill" data-cat="餐飲" onclick="selectCat(this)">🍜 餐飲</button>
           <button class="cat-pill" data-cat="購物" onclick="selectCat(this)">🛍 購物</button>
           <button class="cat-pill" data-cat="帳單" onclick="selectCat(this)">⚡ 帳單</button>
@@ -285,7 +285,7 @@
       <button class="filter-btn active" onclick="filterRecords('全部', this)">全部</button>
       <button class="filter-btn" onclick="filterRecords('老公', this)">老公</button>
       <button class="filter-btn" onclick="filterRecords('老婆', this)">老婆</button>
-      <button class="filter-btn" onclick="filterRecords('Ian', this)">👶 Ian</button>
+      <button class="filter-btn" onclick="filterRecords('奕安', this)">奕安</button>
       <button class="filter-btn" onclick="filterRecords('餐飲', this)">餐飲</button>
       <button class="filter-btn" onclick="filterRecords('購物', this)">購物</button>
     </div>
@@ -304,7 +304,7 @@
 
   let records = [];
   let whoSelected = '老公';
-  let catSelected = 'Ian';
+  let catSelected = '奕安';
   let currentFilter = '全部';
   let currentMonth = '';
   let availableMonths = [];
@@ -459,7 +459,7 @@
 
     list.innerHTML = filtered.map(r => `
       <div class="record-row">
-        <div class="record-date">${r.date}</div>
+        <div class="record-date">${String(r.date).slice(0, 10)}</div>
         <div>
           <span class="record-cat">${r.category}</span>
           <span>${r.note || '—'}</span>
@@ -481,7 +481,7 @@
     document.getElementById('statHusband').textContent = '$' + husband.toLocaleString();
     document.getElementById('statWife').textContent = '$' + wife.toLocaleString();
 
-    const cats = ['Ian','餐飲','購物','帳單','娛樂','醫療','其他'];
+    const cats = ['奕安','餐飲','購物','帳單','娛樂','醫療','其他'];
     const breakdown = document.getElementById('catBreakdown');
     const rows = cats.map(cat => {
       const amt = records.filter(r => r.category === cat).reduce((s, r) => s + Number(r.amount), 0);
