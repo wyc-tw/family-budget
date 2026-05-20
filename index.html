@@ -385,6 +385,7 @@
           <button class="cat-pill" data-cat="帳單/水電" onclick="selectCat(this)">⚡ 帳單/水電</button>
           <button class="cat-pill" data-cat="娛樂" onclick="selectCat(this)">🎬 娛樂</button>
           <button class="cat-pill" data-cat="醫療" onclick="selectCat(this)">💊 醫療</button>
+          <button class="cat-pill" data-cat="奕安專區" onclick="selectCat(this)">👶 奕安專區</button>
           <button class="cat-pill" data-cat="其他" onclick="selectCat(this)">📦 其他</button>
         </div>
       </div>
@@ -590,7 +591,7 @@
     document.getElementById('statHusband').textContent = '$' + husband.toLocaleString();
     document.getElementById('statWife').textContent = '$' + wife.toLocaleString();
 
-    const cats = ['餐飲','購物','帳單/水電','娛樂','醫療','其他'];
+    const cats = ['餐飲','購物','帳單/水電','娛樂','醫療','奕安專區','其他'];
     const breakdown = document.getElementById('catBreakdown');
     breakdown.innerHTML = cats.map(cat => {
       const amt = thisMonth.filter(r => r.category === cat).reduce((s, r) => s + r.amount, 0);
