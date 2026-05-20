@@ -300,7 +300,7 @@
 
 <script>
   // ★ 把你的 Apps Script 網址貼在這裡
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyPV4FczO1TzdqQXzwNg1HB8ADkvsoZAktuVADRiRYW-4dwd9jQsoPvdtkBJWA_PNx6/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwgY4WyFe6xdyVuJBIikSdwGoz3jQDhCAyGG80u922bUseN6APiAKT-XbbkBc_40K5U/exec';
 
   let records = [];
   let whoSelected = '老公';
@@ -457,16 +457,16 @@
       return;
     }
 
-    list.innerHTML = filtered.map(r => `
+    list.innerHTML = filtered.map((r, i) => `
       <div class="record-row">
-        <div class="record-date">${String(r.date).slice(0, 10)}</div>
+        <div class="record-date">${formatDate(r.date)}</div>
         <div>
           <span class="record-cat">${r.category}</span>
           <span>${r.note || '—'}</span>
         </div>
         <div class="record-amount">$${Number(r.amount).toLocaleString()}</div>
         <div class="record-who ${r.who === '老公' ? 'husband' : 'wife'}">${r.who}</div>
-        <div style="text-align:right;color:var(--border);font-size:12px;">✓</div>
+        <button class="record-del" onclick="confirmDelete(${i})" title="刪除">✕</button>
       </div>
     `).join('');
   }
@@ -505,6 +505,50 @@
     t.textContent = msg;
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // 日期格式化，相容台北時區（處理 Date 物件或字串）
+  function formatDate(val) {
+    if (!val) return '—';
+    // 如果已經是 YYYY-MM-DD 字串直接取前10碼
+    if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}/.test(val)) {
+      return val.slice(0, 10);
+    }
+    // 如果是 Date 物件或其他格式，用台北時區格式化
+    const d = new Date(val);
+    if (isNaN(d)) return String(val).slice(0, 10);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function confirmDelete(index) {
+    const r = records[index];
+    if (!confirm(`確定刪除這筆記錄？\n${formatDate(r.date)}　${r.category}　$${r.amount}　${r.note || ''}`)) return;
+    deleteRecord(index);
+  }
+
+  async function deleteRecord(index) {
+    const r = records[index];
+    // 樂觀更新：先從畫面移除
+    records.splice(index, 1);
+    renderRecords();
+    renderStats();
+    showToast('已刪除');
+
+    // 通知 Apps Script 刪除（需要 Script 支援，否則只是本地移除，重整後會再出現）
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete', id: r.id, date: r.date })
+      });
+    } catch(e) {}
+
+    // 重新拉資料確保同步
+    setTimeout(() => loadRecords(), 1500);
   }
 
   init();
