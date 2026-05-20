@@ -26,309 +26,143 @@
     --sans: 'Noto Sans TC', sans-serif;
   }
 
-  body {
-    font-family: var(--sans);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 0;
-  }
+  body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; }
 
   header {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
     padding: 20px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: flex; align-items: center; justify-content: space-between;
   }
 
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .logo-icon {
-    width: 36px; height: 36px;
-    background: var(--accent);
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    color: white;
-    font-size: 18px;
-  }
-
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
   .logo-text { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
   .logo-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
 
+  .header-right { display: flex; align-items: center; gap: 10px; }
+
   .header-badge {
-    font-family: var(--mono);
-    font-size: 11px;
-    background: var(--accent-light);
-    color: var(--accent);
-    padding: 4px 10px;
-    border-radius: 20px;
-    border: 1px solid var(--accent-muted);
-    letter-spacing: 0.5px;
+    font-family: var(--mono); font-size: 11px;
+    background: var(--accent-light); color: var(--accent);
+    padding: 4px 10px; border-radius: 20px;
+    border: 1px solid var(--accent-muted); letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 5px;
   }
 
-  main {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 28px 24px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; display: inline-block; }
+  .status-dot.ok { background: var(--accent); }
+  .status-dot.err { background: var(--danger); }
+  .status-dot.loading { background: #f59e0b; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
-  .card {
+  .btn-refresh {
+    padding: 5px 12px; border-radius: 20px;
+    border: 1px solid var(--border); background: var(--surface);
+    font-size: 12px; font-family: var(--sans); cursor: pointer;
+    color: var(--muted); transition: all 0.15s;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .btn-refresh:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-refresh.spinning span { display: inline-block; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Month tabs */
+  .month-tabs {
     background: var(--surface);
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    overflow: hidden;
-  }
-
-  .card-header {
-    padding: 16px 20px;
     border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    padding: 0 24px;
+    display: flex; gap: 0; overflow-x: auto;
   }
+  .month-tab {
+    padding: 12px 18px; font-size: 13px; font-family: var(--sans);
+    border: none; background: none; cursor: pointer;
+    color: var(--muted); border-bottom: 2px solid transparent;
+    white-space: nowrap; transition: all 0.15s;
+  }
+  .month-tab:hover { color: var(--text); }
+  .month-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
 
-  .card-header-icon { font-size: 16px; }
+  main { max-width: 960px; margin: 0 auto; padding: 28px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .card { background: var(--surface); border-radius: 14px; border: 1px solid var(--border); overflow: hidden; }
+  .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
   .card-header-title { font-size: 14px; font-weight: 500; }
   .card-body { padding: 20px; }
 
-  /* Form */
   .form-card { grid-column: 1 / 2; }
 
   .field { margin-bottom: 14px; }
-  .field label {
-    display: block;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    margin-bottom: 6px;
-  }
-
-  .field input, .field select, .field textarea {
-    width: 100%;
-    padding: 9px 12px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 14px;
-    font-family: var(--sans);
-    color: var(--text);
-    background: var(--bg);
-    outline: none;
-    transition: border-color 0.15s;
-  }
-
-  .field input:focus, .field select:focus, .field textarea:focus {
-    border-color: var(--accent);
-    background: white;
-  }
-
+  .field label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+  .field input, .field select, .field textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: var(--sans); color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); background: white; }
   .field textarea { resize: none; height: 60px; }
 
   .amount-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-  /* Who paid toggle */
   .toggle-group { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-
-  .toggle-btn {
-    flex: 1; padding: 9px 12px;
-    border: none; background: var(--bg);
-    font-family: var(--sans); font-size: 13px; font-weight: 500;
-    cursor: pointer; transition: all 0.15s;
-    color: var(--muted);
-  }
-
+  .toggle-btn { flex: 1; padding: 9px 12px; border: none; background: var(--bg); font-family: var(--sans); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--muted); }
   .toggle-btn.husband.active { background: var(--husband-light); color: var(--husband); }
   .toggle-btn.wife.active { background: var(--wife-light); color: var(--wife); }
   .toggle-btn:first-child { border-right: 1px solid var(--border); }
 
-  /* Category pills */
   .cat-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-
-  .cat-pill {
-    padding: 6px 12px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    font-size: 12px; font-family: var(--sans);
-    cursor: pointer; transition: all 0.15s;
-    color: var(--muted);
-  }
-
+  .cat-pill { padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); font-size: 12px; font-family: var(--sans); cursor: pointer; transition: all 0.15s; color: var(--muted); }
   .cat-pill:hover { border-color: var(--accent); color: var(--accent); }
   .cat-pill.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); font-weight: 500; }
 
-  /* Submit button */
-  .btn-submit {
-    width: 100%; padding: 11px;
-    background: var(--accent); color: white;
-    border: none; border-radius: 9px;
-    font-family: var(--sans); font-size: 14px; font-weight: 500;
-    cursor: pointer; transition: opacity 0.15s;
-    margin-top: 6px;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-  }
-
+  .btn-submit { width: 100%; padding: 11px; background: var(--accent); color: white; border: none; border-radius: 9px; font-family: var(--sans); font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .btn-submit:hover { opacity: 0.88; }
   .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  /* Stats */
   .stats-card { grid-column: 2 / 3; }
 
   .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-
-  .stat-box {
-    padding: 12px 14px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--bg);
-  }
-
+  .stat-box { padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); }
   .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
   .stat-value { font-family: var(--mono); font-size: 20px; font-weight: 500; }
   .stat-value.green { color: var(--accent); }
   .stat-value.husband { color: var(--husband); }
   .stat-value.wife { color: var(--wife); }
 
-  /* Cat breakdown */
   .cat-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .cat-bar-label { font-size: 12px; color: var(--muted); width: 52px; flex-shrink: 0; }
-  .cat-bar-track { flex: 1; height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+  .cat-bar-label { font-size: 12px; color: var(--muted); width: 60px; flex-shrink: 0; }
+  .cat-bar-track { flex: 1; height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; border: 1px solid var(--border); }
   .cat-bar-fill { height: 100%; border-radius: 3px; background: var(--accent-muted); transition: width 0.4s; }
-  .cat-bar-amt { font-family: var(--mono); font-size: 12px; color: var(--muted); width: 60px; text-align: right; flex-shrink: 0; }
+  .cat-bar-amt { font-family: var(--mono); font-size: 12px; color: var(--muted); width: 70px; text-align: right; flex-shrink: 0; }
 
-  /* Records */
   .records-card { grid-column: 1 / 3; }
 
-  .records-toolbar {
-    display: flex; align-items: center; gap: 10px;
-    padding: 12px 20px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .filter-btn {
-    padding: 5px 12px; border-radius: 20px;
-    border: 1px solid var(--border); background: var(--bg);
-    font-size: 12px; font-family: var(--sans); cursor: pointer;
-    color: var(--muted); transition: all 0.15s;
-  }
+  .records-toolbar { display: flex; align-items: center; gap: 8px; padding: 12px 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .filter-btn { padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); font-size: 12px; font-family: var(--sans); cursor: pointer; color: var(--muted); transition: all 0.15s; }
   .filter-btn.active { background: var(--text); color: white; border-color: var(--text); }
 
   .records-list { padding: 0; }
 
-  .record-row {
-    display: grid;
-    grid-template-columns: 90px 1fr 80px 90px 90px;
-    align-items: center;
-    padding: 12px 20px;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-    transition: background 0.1s;
-  }
-
+  .record-row { display: grid; grid-template-columns: 90px 1fr 90px 90px 36px; align-items: center; padding: 12px 20px; border-bottom: 1px solid var(--border); font-size: 13px; transition: background 0.1s; }
   .record-row:last-child { border-bottom: none; }
   .record-row:hover { background: var(--bg); }
 
   .record-date { font-family: var(--mono); font-size: 12px; color: var(--muted); }
-
-  .record-cat {
-    display: inline-block;
-    padding: 2px 8px; border-radius: 4px;
-    font-size: 11px; font-weight: 500;
-    background: var(--accent-light); color: var(--accent);
-    margin-right: 8px;
-  }
-
-  .record-note { color: var(--text); }
-
+  .record-cat { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: var(--accent-light); color: var(--accent); margin-right: 6px; }
   .record-amount { font-family: var(--mono); font-weight: 500; text-align: right; }
-
-  .record-who {
-    text-align: center;
-    font-size: 11px; font-weight: 500;
-    padding: 3px 8px; border-radius: 4px;
-    justify-self: center;
-  }
+  .record-who { text-align: center; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 4px; justify-self: center; }
   .record-who.husband { background: var(--husband-light); color: var(--husband); }
   .record-who.wife { background: var(--wife-light); color: var(--wife); }
-
-  .record-del {
-    justify-self: end; background: none; border: none;
-    cursor: pointer; color: var(--border);
-    font-size: 16px; transition: color 0.15s;
-    padding: 4px;
-  }
+  .record-del { justify-self: end; background: none; border: none; cursor: pointer; color: var(--border); font-size: 14px; transition: color 0.15s; padding: 4px; }
   .record-del:hover { color: var(--danger); }
 
-  .empty-state {
-    padding: 40px;
-    text-align: center;
-    color: var(--muted);
-    font-size: 14px;
-  }
+  .empty-state { padding: 40px; text-align: center; color: var(--muted); font-size: 14px; }
+  .loading-state { padding: 40px; text-align: center; color: var(--muted); font-size: 13px; }
 
-  /* Toast */
-  .toast {
-    position: fixed; bottom: 24px; left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--text); color: white;
-    padding: 10px 20px; border-radius: 8px;
-    font-size: 13px;
-    transition: transform 0.25s ease;
-    z-index: 100;
-    pointer-events: none;
-  }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--text); color: white; padding: 10px 20px; border-radius: 8px; font-size: 13px; transition: transform 0.25s ease; z-index: 100; pointer-events: none; }
   .toast.show { transform: translateX(-50%) translateY(0); }
-
-  /* Status indicator */
-  .status-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: #ccc;
-    display: inline-block;
-    margin-right: 6px;
-  }
-  .status-dot.ok { background: var(--accent); }
-  .status-dot.err { background: var(--danger); }
-
-  .status-text { font-size: 11px; color: var(--muted); }
-
-  .sheet-url-box {
-    display: flex; gap: 8px; align-items: center;
-    margin-top: 14px;
-  }
-
-  .sheet-url-input {
-    flex: 1; padding: 8px 12px;
-    border: 1px solid var(--border); border-radius: 8px;
-    font-size: 12px; font-family: var(--mono);
-    background: var(--bg); color: var(--text); outline: none;
-  }
-  .sheet-url-input:focus { border-color: var(--accent); background: white; }
-
-  .btn-save-url {
-    padding: 8px 14px;
-    background: var(--accent); color: white;
-    border: none; border-radius: 8px;
-    font-size: 12px; cursor: pointer;
-    font-family: var(--sans);
-  }
 
   @media (max-width: 700px) {
     main { grid-template-columns: 1fr; }
     .form-card, .stats-card, .records-card { grid-column: 1 / 2; }
-    .record-row { grid-template-columns: 70px 1fr 70px; }
+    .record-row { grid-template-columns: 70px 1fr 70px 30px; }
     .record-who { display: none; }
-    .record-del { display: none; }
   }
 </style>
 </head>
@@ -342,18 +176,26 @@
       <div class="logo-sub">共同財務管理</div>
     </div>
   </div>
-  <div class="header-badge" id="statusBadge">
-    <span class="status-dot" id="statusDot"></span>
-    <span class="status-text" id="statusText">尚未連接試算表</span>
+  <div class="header-right">
+    <button class="btn-refresh" id="refreshBtn" onclick="loadRecords()" aria-label="重新整理">
+      <span>↻</span> 同步
+    </button>
+    <div class="header-badge">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText">連線中...</span>
+    </div>
   </div>
 </header>
+
+<!-- 月份分頁 -->
+<div class="month-tabs" id="monthTabs"></div>
 
 <main>
 
   <!-- 新增記錄 -->
   <div class="card form-card">
     <div class="card-header">
-      <span class="card-header-icon">✏️</span>
+      <span>✏️</span>
       <span class="card-header-title">新增支出</span>
     </div>
     <div class="card-body">
@@ -380,12 +222,12 @@
       <div class="field">
         <label>分類</label>
         <div class="cat-grid" id="catGrid">
-          <button class="cat-pill active" data-cat="奕安專區" onclick="selectCat(this)">👶 Ian</button>
-          <button class="cat-pill" data-cat="餐飲" onclick="selectCat(this)">🍜 餐飲</button>
+          <button class="cat-pill active" data-cat="餐飲" onclick="selectCat(this)">🍜 餐飲</button>
           <button class="cat-pill" data-cat="購物" onclick="selectCat(this)">🛍 購物</button>
-          <button class="cat-pill" data-cat="帳單" onclick="selectCat(this)">⚡ 帳單</button>
+          <button class="cat-pill" data-cat="帳單/水電" onclick="selectCat(this)">⚡ 帳單/水電</button>
           <button class="cat-pill" data-cat="娛樂" onclick="selectCat(this)">🎬 娛樂</button>
           <button class="cat-pill" data-cat="醫療" onclick="selectCat(this)">💊 醫療</button>
+          <button class="cat-pill" data-cat="奕安專區" onclick="selectCat(this)">👶 奕安專區</button>
           <button class="cat-pill" data-cat="其他" onclick="selectCat(this)">📦 其他</button>
         </div>
       </div>
@@ -399,20 +241,19 @@
         <span>＋ 新增記錄</span>
       </button>
 
-      <!-- 試算表設定（網址已固定） -->
     </div>
   </div>
 
   <!-- 統計 -->
   <div class="card stats-card">
     <div class="card-header">
-      <span class="card-header-icon">📊</span>
-      <span class="card-header-title">本月統計</span>
+      <span>📊</span>
+      <span class="card-header-title" id="statsTitle">本月統計</span>
     </div>
     <div class="card-body">
       <div class="stat-grid">
         <div class="stat-box">
-          <div class="stat-label">本月總支出</div>
+          <div class="stat-label">總支出</div>
           <div class="stat-value green" id="statTotal">$0</div>
         </div>
         <div class="stat-box">
@@ -428,7 +269,6 @@
           <div class="stat-value wife" id="statWife">$0</div>
         </div>
       </div>
-
       <div style="font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">分類佔比</div>
       <div id="catBreakdown"></div>
     </div>
@@ -437,7 +277,7 @@
   <!-- 記錄列表 -->
   <div class="card records-card">
     <div class="card-header">
-      <span class="card-header-icon">📋</span>
+      <span>📋</span>
       <span class="card-header-title">支出記錄</span>
     </div>
     <div class="records-toolbar">
@@ -446,8 +286,11 @@
       <button class="filter-btn" onclick="filterRecords('老婆', this)">老婆</button>
       <button class="filter-btn" onclick="filterRecords('餐飲', this)">餐飲</button>
       <button class="filter-btn" onclick="filterRecords('購物', this)">購物</button>
+      <button class="filter-btn" onclick="filterRecords('奕安專區', this)">👶 奕安專區</button>
     </div>
-    <div class="records-list" id="recordsList"></div>
+    <div class="records-list" id="recordsList">
+      <div class="loading-state">載入中...</div>
+    </div>
   </div>
 
 </main>
@@ -456,28 +299,81 @@
 
 <script>
   // ★ 把你的 Apps Script 網址貼在這裡
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz40e9YH54JwbelO_jgYVwn8ffwSYaDmTJ0DOsn24PFWgP5sab0WW6uLipM9PrM1074/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/請貼上你的網址/exec';
 
-  let records = JSON.parse(localStorage.getItem('coupleRecords') || '[]');
+  let records = [];
   let whoSelected = '老公';
   let catSelected = '餐飲';
   let currentFilter = '全部';
+  let currentMonth = '';
+  let availableMonths = [];
 
-  // Init date
   document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
 
-  updateStatus();
+  // 初始化：載入月份清單，再載入本月資料
+  async function init() {
+    setStatus('loading', '連線中...');
+    try {
+      const res = await fetch(SCRIPT_URL + '?action=months');
+      const data = await res.json();
+      availableMonths = data.months || [];
 
-  function updateStatus() {
-    const dot = document.getElementById('statusDot');
-    const txt = document.getElementById('statusText');
-    if (SCRIPT_URL.includes('script.google.com') && !SCRIPT_URL.includes('請貼上')) {
-      dot.className = 'status-dot ok';
-      txt.textContent = '已連接試算表';
-    } else {
-      dot.className = 'status-dot err';
-      txt.textContent = '尚未設定 Script 網址';
+      // 確保本月在清單裡
+      const now = new Date();
+      const thisMonth = now.getFullYear() + '/' + (now.getMonth() + 1);
+      if (!availableMonths.includes(thisMonth)) {
+        availableMonths.unshift(thisMonth);
+      }
+
+      currentMonth = thisMonth;
+      renderMonthTabs();
+      await loadRecords();
+      setStatus('ok', '已連接試算表');
+    } catch (e) {
+      setStatus('err', '連線失敗');
+      document.getElementById('recordsList').innerHTML = '<div class="empty-state">無法連接試算表，請確認網址設定</div>';
     }
+  }
+
+  function renderMonthTabs() {
+    const tabs = document.getElementById('monthTabs');
+    tabs.innerHTML = availableMonths.map(m => `
+      <button class="month-tab ${m === currentMonth ? 'active' : ''}" onclick="switchMonth('${m}')">${m}</button>
+    `).join('');
+  }
+
+  async function switchMonth(month) {
+    currentMonth = month;
+    renderMonthTabs();
+    document.getElementById('statsTitle').textContent = month + ' 統計';
+    await loadRecords();
+  }
+
+  async function loadRecords() {
+    const btn = document.getElementById('refreshBtn');
+    btn.classList.add('spinning');
+    document.getElementById('recordsList').innerHTML = '<div class="loading-state">載入中...</div>';
+
+    try {
+      const [year, month] = currentMonth.split('/');
+      const res = await fetch(`${SCRIPT_URL}?action=read&year=${year}&month=${month}`);
+      const data = await res.json();
+      records = data.records || [];
+      renderRecords();
+      renderStats();
+      setStatus('ok', '已連接試算表');
+    } catch (e) {
+      setStatus('err', '同步失敗');
+      document.getElementById('recordsList').innerHTML = '<div class="empty-state">載入失敗，請點同步重試</div>';
+    } finally {
+      btn.classList.remove('spinning');
+    }
+  }
+
+  function setStatus(type, text) {
+    const dot = document.getElementById('statusDot');
+    dot.className = 'status-dot ' + type;
+    document.getElementById('statusText').textContent = text;
   }
 
   function selectWho(who) {
@@ -501,38 +397,44 @@
       showToast('請填寫日期和金額'); return;
     }
 
-    const record = { date, amount, category: catSelected, who: whoSelected, note, id: Date.now() };
+    const record = { date, amount, category: catSelected, who: whoSelected, note };
 
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
     btn.querySelector('span').textContent = '送出中...';
 
-    let sentToSheet = false;
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(record)
+      });
 
-    if (SCRIPT_URL.includes('script.google.com') && !SCRIPT_URL.includes('請貼上')) {
-      try {
-        await fetch(SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(record)
-        });
-        sentToSheet = true;
-      } catch (e) {}
+      document.getElementById('inputAmount').value = '';
+      document.getElementById('inputNote').value = '';
+      showToast('已新增，正在同步...');
+
+      // 寫入後稍等一秒再拉資料（Sheet 需要一點時間寫入）
+      setTimeout(async () => {
+        // 如果新增的月份不在清單裡，加進去
+        const [y, m] = date.split('-');
+        const newMonth = y + '/' + parseInt(m);
+        if (!availableMonths.includes(newMonth)) {
+          availableMonths.unshift(newMonth);
+        }
+        currentMonth = newMonth;
+        renderMonthTabs();
+        await loadRecords();
+        showToast('同步完成 ✓');
+      }, 1200);
+
+    } catch (e) {
+      showToast('新增失敗，請重試');
+    } finally {
+      btn.disabled = false;
+      btn.querySelector('span').textContent = '＋ 新增記錄';
     }
-
-    records.unshift(record);
-    localStorage.setItem('coupleRecords', JSON.stringify(records));
-
-    document.getElementById('inputAmount').value = '';
-    document.getElementById('inputNote').value = '';
-
-    btn.disabled = false;
-    btn.querySelector('span').textContent = '＋ 新增記錄';
-
-    renderRecords();
-    renderStats();
-    showToast(sentToSheet ? '已新增，並寫入 Google 試算表 ✓' : '已新增（本地儲存）');
   }
 
   function filterRecords(filter, el) {
@@ -540,13 +442,6 @@
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     el.classList.add('active');
     renderRecords();
-  }
-
-  function deleteRecord(id) {
-    records = records.filter(r => r.id !== id);
-    localStorage.setItem('coupleRecords', JSON.stringify(records));
-    renderRecords();
-    renderStats();
   }
 
   function renderRecords() {
@@ -557,7 +452,7 @@
     }
 
     if (filtered.length === 0) {
-      list.innerHTML = '<div class="empty-state">尚無記錄，新增第一筆吧！</div>';
+      list.innerHTML = '<div class="empty-state">這個月還沒有記錄</div>';
       return;
     }
 
@@ -566,49 +461,42 @@
         <div class="record-date">${r.date}</div>
         <div>
           <span class="record-cat">${r.category}</span>
-          <span class="record-note">${r.note || '—'}</span>
+          <span>${r.note || '—'}</span>
         </div>
-        <div class="record-amount">$${r.amount.toLocaleString()}</div>
+        <div class="record-amount">$${Number(r.amount).toLocaleString()}</div>
         <div class="record-who ${r.who === '老公' ? 'husband' : 'wife'}">${r.who}</div>
-        <button class="record-del" onclick="deleteRecord(${r.id})" aria-label="刪除">✕</button>
+        <div style="text-align:right;color:var(--border);font-size:12px;">✓</div>
       </div>
     `).join('');
   }
 
   function renderStats() {
-    const now = new Date();
-    const thisMonth = records.filter(r => {
-      const d = new Date(r.date);
-      return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
-    });
-
-    const total = thisMonth.reduce((s, r) => s + r.amount, 0);
-    const husband = thisMonth.filter(r => r.who === '老公').reduce((s, r) => s + r.amount, 0);
-    const wife = thisMonth.filter(r => r.who === '老婆').reduce((s, r) => s + r.amount, 0);
+    const total = records.reduce((s, r) => s + Number(r.amount), 0);
+    const husband = records.filter(r => r.who === '老公').reduce((s, r) => s + Number(r.amount), 0);
+    const wife = records.filter(r => r.who === '老婆').reduce((s, r) => s + Number(r.amount), 0);
 
     document.getElementById('statTotal').textContent = '$' + total.toLocaleString();
-    document.getElementById('statCount').textContent = thisMonth.length + ' 筆';
+    document.getElementById('statCount').textContent = records.length + ' 筆';
     document.getElementById('statHusband').textContent = '$' + husband.toLocaleString();
     document.getElementById('statWife').textContent = '$' + wife.toLocaleString();
 
     const cats = ['餐飲','購物','帳單/水電','娛樂','醫療','奕安專區','其他'];
     const breakdown = document.getElementById('catBreakdown');
-    breakdown.innerHTML = cats.map(cat => {
-      const amt = thisMonth.filter(r => r.category === cat).reduce((s, r) => s + r.amount, 0);
+    const rows = cats.map(cat => {
+      const amt = records.filter(r => r.category === cat).reduce((s, r) => s + Number(r.amount), 0);
       if (amt === 0) return '';
       const pct = total > 0 ? Math.round(amt / total * 100) : 0;
+      const label = cat.length > 5 ? cat.slice(0, 5) : cat;
       return `
         <div class="cat-row">
-          <div class="cat-bar-label">${cat.length > 4 ? cat.slice(0,4) : cat}</div>
+          <div class="cat-bar-label">${label}</div>
           <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${pct}%"></div></div>
           <div class="cat-bar-amt">$${amt.toLocaleString()}</div>
         </div>
       `;
     }).join('');
 
-    if (!breakdown.innerHTML.trim()) {
-      breakdown.innerHTML = '<div style="font-size:13px;color:var(--muted);">本月尚無支出</div>';
-    }
+    breakdown.innerHTML = rows || '<div style="font-size:13px;color:var(--muted);">本月尚無支出</div>';
   }
 
   function showToast(msg) {
@@ -618,8 +506,7 @@
     setTimeout(() => t.classList.remove('show'), 2500);
   }
 
-  renderRecords();
-  renderStats();
+  init();
 </script>
 </body>
 </html>
