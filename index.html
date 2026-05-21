@@ -103,7 +103,7 @@
   .filter-btn { padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); font-size: 12px; font-family: var(--sans); cursor: pointer; color: var(--muted); transition: all 0.15s; }
   .filter-btn.active { background: var(--text); color: white; border-color: var(--text); }
 
-  .record-row { display: grid; grid-template-columns: 60px 52px 44px 1fr 90px 36px; align-items: center; padding: 11px 20px; border-bottom: 1px solid var(--border); font-size: 13px; transition: background 0.1s; }
+  .record-row { display: grid; grid-template-columns: 55px 1fr 90px 32px; align-items: center; gap: 10px; padding: 11px 20px; border-bottom: 1px solid var(--border); font-size: 13px; transition: background 0.1s; }
   .record-row:last-child { border-bottom: none; }
   .record-row:hover { background: var(--bg); }
   .record-date { font-family: var(--mono); font-size: 12px; color: var(--muted); }
@@ -127,7 +127,7 @@
   @media (max-width: 700px) {
     main { grid-template-columns: 1fr; padding: 16px; }
     .form-card, .stats-card, .records-card { grid-column: 1 / 2; }
-    .record-row { grid-template-columns: 55px 46px 38px 1fr 70px 28px; }
+    .record-row { grid-template-columns: 48px 1fr 70px 28px; gap: 8px; }
   }
 </style>
 </head>
@@ -464,11 +464,11 @@
     list.innerHTML = filtered.map((r, i) => `
       <div class="record-row">
         <div class="record-date">${formatDate(r.date)}</div>
-        <span class="tag ${r.who === '老公' ? 'husband' : 'wife'}">${r.who}</span>
-        <span class="tag ${r.type === '收入' ? 'income' : 'expense'}">${r.type}</span>
-        <div>
-          <span class="tag" style="margin-right:5px;">${r.category}</span>
-          <span>${r.note || '—'}</span>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span class="tag ${r.who === '老公' ? 'husband' : 'wife'}">${r.who}</span>
+          <span class="tag ${r.type === '收入' ? 'income' : 'expense'}">${r.type}</span>
+          <span class="tag">${r.category}</span>
+          <span style="font-size:13px;color:var(--text);">${r.note || ''}</span>
         </div>
         <div class="record-amount ${r.type === '收入' ? 'income' : ''}">
           ${r.type === '收入' ? '+' : ''}$${Number(r.amount).toLocaleString()}
@@ -520,9 +520,8 @@
 
   function formatDate(val) {
     if (!val) return '—';
-    const s = String(val).trim();
-    // 支援 YYYY-MM-DD 和 YYYY/M/D 兩種格式
-    const parts = s.replace(/\//g, '-').slice(0, 10).split('-');
+    const s = String(val).trim().replace(/\//g, '-').slice(0, 10);
+    const parts = s.split('-');
     if (parts.length !== 3) return s;
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const m = parseInt(parts[1], 10);
