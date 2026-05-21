@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>♡記帳本</title>
+<title>夫妻記帳本</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -103,7 +103,7 @@
   .filter-btn { padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); font-size: 12px; font-family: var(--sans); cursor: pointer; color: var(--muted); transition: all 0.15s; }
   .filter-btn.active { background: var(--text); color: white; border-color: var(--text); }
 
-  .record-row { display: grid; grid-template-columns: 86px 44px 1fr 90px 80px 36px; align-items: center; padding: 11px 20px; border-bottom: 1px solid var(--border); font-size: 13px; transition: background 0.1s; }
+  .record-row { display: grid; grid-template-columns: 60px 52px 44px 1fr 90px 36px; align-items: center; padding: 11px 20px; border-bottom: 1px solid var(--border); font-size: 13px; transition: background 0.1s; }
   .record-row:last-child { border-bottom: none; }
   .record-row:hover { background: var(--bg); }
   .record-date { font-family: var(--mono); font-size: 12px; color: var(--muted); }
@@ -129,8 +129,7 @@
   @media (max-width: 700px) {
     main { grid-template-columns: 1fr; padding: 16px; }
     .form-card, .stats-card, .records-card { grid-column: 1 / 2; }
-    .record-row { grid-template-columns: 80px 38px 1fr 72px 28px; }
-    .record-who { display: none; }
+    .record-row { grid-template-columns: 55px 46px 38px 1fr 70px 28px; }
   }
 </style>
 </head>
@@ -140,7 +139,7 @@
   <div class="logo">
     <div class="logo-icon">♡</div>
     <div>
-      <div class="logo-text">記帳本</div>
+      <div class="logo-text">夫妻記帳本</div>
       <div class="logo-sub">共同財務管理</div>
     </div>
   </div>
@@ -437,7 +436,8 @@
     }
     list.innerHTML = filtered.map((r, i) => `
       <div class="record-row">
-        <div class="record-date">${r.date}</div>
+        <div class="record-date">${formatDate(r.date)}</div>
+        <div class="record-who ${r.who === '老公' ? 'husband' : 'wife'}">${r.who}</div>
         <div class="record-type ${r.type === '收入' ? 'income' : 'expense'}">${r.type}</div>
         <div>
           <span class="record-cat">${r.category}</span>
@@ -446,7 +446,6 @@
         <div class="record-amount ${r.type === '收入' ? 'income' : ''}">
           ${r.type === '收入' ? '+' : ''}$${Number(r.amount).toLocaleString()}
         </div>
-        <div class="record-who ${r.who === '老公' ? 'husband' : 'wife'}">${r.who}</div>
         <button class="record-del" onclick="confirmDelete(${i})" title="刪除">✕</button>
       </div>
     `).join('');
@@ -492,7 +491,11 @@
     setTimeout(() => t.classList.remove('show'), 2500);
   }
 
-  function confirmDelete(index) {
+  function formatDate(val) {
+    if (!val) return '—';
+    const d = new Date(String(val).slice(0, 10) + 'T12:00:00');
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
     const r = records[index];
     if (!confirm(`確定刪除？\n${r.date}　${r.type}　${r.category}　$${r.amount}${r.note ? '　' + r.note : ''}`)) return;
     deleteRecord(index);
