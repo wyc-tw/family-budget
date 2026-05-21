@@ -496,6 +496,8 @@
     const d = new Date(String(val).slice(0, 10) + 'T12:00:00');
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
+
+  function confirmDelete(index) {
     const r = records[index];
     if (!confirm(`確定刪除？\n${r.date}　${r.type}　${r.category}　$${r.amount}${r.note ? '　' + r.note : ''}`)) return;
     deleteRecord(index);
