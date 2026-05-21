@@ -326,7 +326,7 @@
   async function init() {
     setStatus('loading', '連線中...');
     try {
-      const res = await fetch(SCRIPT_URL + '?action=months');
+      const res = await fetch(SCRIPT_URL + '?action=months', { redirect: 'follow' });
       const data = await res.json();
       availableMonths = data.months || [];
       const thisMonth = todayTW().slice(0, 7).replace('-', '/').replace(/\/0/, '/');
@@ -360,7 +360,7 @@
     document.getElementById('recordsList').innerHTML = '<div class="loading-state">載入中...</div>';
     try {
       const [year, month] = currentMonth.split('/');
-      const res = await fetch(`${SCRIPT_URL}?action=read&year=${year}&month=${month}`);
+      const res = await fetch(`${SCRIPT_URL}?action=read&year=${year}&month=${month}`, { redirect: 'follow' });
       const data = await res.json();
       records = data.records || [];
       renderRecords();
