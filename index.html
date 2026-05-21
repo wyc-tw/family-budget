@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>♡記帳本</title>
+<title>夫妻記帳本</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -137,7 +137,7 @@
   <div class="logo">
     <div class="logo-icon">♡</div>
     <div>
-      <div class="logo-text">記帳本</div>
+      <div class="logo-text">夫妻記帳本</div>
       <div class="logo-sub">共同財務管理</div>
     </div>
   </div>
@@ -461,7 +461,7 @@
     if (filtered.length === 0) {
       list.innerHTML = '<div class="empty-state">這個月還沒有記錄</div>'; return;
     }
-    list.innerHTML = filtered.map((r, i) => `
+    list.innerHTML = filtered.map((r) => `
       <div class="record-row">
         <div class="record-date">${formatDate(r.date)}</div>
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
@@ -473,7 +473,7 @@
         <div class="record-amount ${r.type === '收入' ? 'income' : ''}">
           ${r.type === '收入' ? '+' : ''}$${Number(r.amount).toLocaleString()}
         </div>
-        <button class="record-del" onclick="confirmDelete(${i})" title="刪除">✕</button>
+        <button class="record-del" onclick="confirmDelete('${r.id}')" title="刪除">✕</button>
       </div>
     `).join('');
   }
@@ -530,15 +530,17 @@
     return months[m - 1] + ' ' + d;
   }
 
-  function confirmDelete(index) {
-    const r = records[index];
+  function confirmDelete(id) {
+    const r = records.find(r => r.id === id);
+    if (!r) return;
     if (!confirm(`確定刪除？\n${r.date}　${r.type}　${r.category}　$${r.amount}${r.note ? '　' + r.note : ''}`)) return;
-    deleteRecord(index);
+    deleteRecord(id);
   }
 
-  async function deleteRecord(index) {
-    const r = records[index];
-    records.splice(index, 1);
+  async function deleteRecord(id) {
+    const r = records.find(r => r.id === id);
+    if (!r) return;
+    records = records.filter(r => r.id !== id);
     renderRecords();
     renderStats();
     showToast('已刪除');
