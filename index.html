@@ -107,15 +107,13 @@
   .record-row:last-child { border-bottom: none; }
   .record-row:hover { background: var(--bg); }
   .record-date { font-family: var(--mono); font-size: 12px; color: var(--muted); }
-  .record-type { font-size: 10px; font-weight: 500; padding: 2px 6px; border-radius: 4px; text-align: center; }
-  .record-type.expense { background: var(--accent-light); color: var(--accent); }
-  .record-type.income { background: var(--income-light); color: var(--income); }
-  .record-cat { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-weight: 500; background: var(--bg); border: 1px solid var(--border); color: var(--muted); margin-right: 5px; }
+  .tag { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: var(--bg); border: 1px solid var(--border); color: var(--muted); white-space: nowrap; }
+  .tag.husband { background: var(--husband-light); border-color: var(--husband-light); color: var(--husband); }
+  .tag.wife { background: var(--wife-light); border-color: var(--wife-light); color: var(--wife); }
+  .tag.expense { background: var(--accent-light); border-color: var(--accent-light); color: var(--accent); }
+  .tag.income { background: var(--income-light); border-color: var(--income-light); color: var(--income); }
   .record-amount { font-family: var(--mono); font-weight: 500; text-align: right; }
   .record-amount.income { color: var(--income); }
-  .record-who { text-align: center; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 4px; justify-self: center; }
-  .record-who.husband { background: var(--husband-light); color: var(--husband); }
-  .record-who.wife { background: var(--wife-light); color: var(--wife); }
   .record-del { justify-self: end; background: none; border: none; cursor: pointer; color: var(--border); font-size: 14px; transition: color 0.15s; padding: 4px; }
   .record-del:hover { color: var(--danger); }
 
@@ -437,10 +435,10 @@
     list.innerHTML = filtered.map((r, i) => `
       <div class="record-row">
         <div class="record-date">${formatDate(r.date)}</div>
-        <div class="record-who ${r.who === '老公' ? 'husband' : 'wife'}">${r.who}</div>
-        <div class="record-type ${r.type === '收入' ? 'income' : 'expense'}">${r.type}</div>
+        <span class="tag ${r.who === '老公' ? 'husband' : 'wife'}">${r.who}</span>
+        <span class="tag ${r.type === '收入' ? 'income' : 'expense'}">${r.type}</span>
         <div>
-          <span class="record-cat">${r.category}</span>
+          <span class="tag" style="margin-right:5px;">${r.category}</span>
           <span>${r.note || '—'}</span>
         </div>
         <div class="record-amount ${r.type === '收入' ? 'income' : ''}">
@@ -493,8 +491,15 @@
 
   function formatDate(val) {
     if (!val) return '—';
-    const d = new Date(String(val).slice(0, 10) + 'T12:00:00');
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const s = String(val).trim();
+    // 支援 YYYY-MM-DD 和 YYYY/M/D 兩種格式
+    const parts = s.replace(/\//g, '-').slice(0, 10).split('-');
+    if (parts.length !== 3) return s;
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const m = parseInt(parts[1], 10);
+    const d = parseInt(parts[2], 10);
+    if (isNaN(m) || isNaN(d) || m < 1 || m > 12) return s;
+    return months[m - 1] + ' ' + d;
   }
 
   function confirmDelete(index) {
