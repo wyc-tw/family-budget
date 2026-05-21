@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>夫妻記帳本</title>
+<title>♡記帳本</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -137,7 +137,7 @@
   <div class="logo">
     <div class="logo-icon">♡</div>
     <div>
-      <div class="logo-text">夫妻記帳本</div>
+      <div class="logo-text">♡記帳本</div>
       <div class="logo-sub">共同財務管理</div>
     </div>
   </div>
@@ -196,9 +196,6 @@
           <button class="cat-pill active" data-cat="奕安" onclick="selectCat(this)">👶 奕安</button>
           <button class="cat-pill" data-cat="餐飲" onclick="selectCat(this)">🍜 餐飲</button>
           <button class="cat-pill" data-cat="購物" onclick="selectCat(this)">🛍 購物</button>
-          <button class="cat-pill" data-cat="帳單" onclick="selectCat(this)">⚡ 帳單</button>
-          <button class="cat-pill" data-cat="娛樂" onclick="selectCat(this)">🎬 娛樂</button>
-          <button class="cat-pill" data-cat="醫療" onclick="selectCat(this)">💊 醫療</button>
           <button class="cat-pill" data-cat="其他" onclick="selectCat(this)">📦 其他</button>
         </div>
       </div>
@@ -321,11 +318,32 @@
     catSelected = el.dataset.cat;
   }
 
+  // JSONP 讀取，繞過 CORS 限制
+  function jsonp(url) {
+    return new Promise((resolve, reject) => {
+      const cbName = 'cb_' + Date.now();
+      const script = document.createElement('script');
+      const timeout = setTimeout(() => {
+        delete window[cbName];
+        document.body.removeChild(script);
+        reject(new Error('timeout'));
+      }, 10000);
+      window[cbName] = (data) => {
+        clearTimeout(timeout);
+        delete window[cbName];
+        document.body.removeChild(script);
+        resolve(data);
+      };
+      script.src = url + '&callback=' + cbName;
+      script.onerror = () => { clearTimeout(timeout); reject(new Error('script error')); };
+      document.body.appendChild(script);
+    });
+  }
+
   async function init() {
     setStatus('loading', '連線中...');
     try {
-      const res = await fetch(SCRIPT_URL + '?action=months', { redirect: 'follow' });
-      const data = await res.json();
+      const data = await jsonp(SCRIPT_URL + '?action=months');
       availableMonths = data.months || [];
       const thisMonth = todayTW().slice(0, 7).replace('-', '/').replace(/\/0/, '/');
       if (!availableMonths.includes(thisMonth)) availableMonths.unshift(thisMonth);
@@ -358,8 +376,7 @@
     document.getElementById('recordsList').innerHTML = '<div class="loading-state">載入中...</div>';
     try {
       const [year, month] = currentMonth.split('/');
-      const res = await fetch(`${SCRIPT_URL}?action=read&year=${year}&month=${month}`, { redirect: 'follow' });
-      const data = await res.json();
+      const data = await jsonp(`${SCRIPT_URL}?action=read&year=${year}&month=${month}`);
       records = data.records || [];
       renderRecords();
       renderStats();
@@ -467,7 +484,7 @@
     document.getElementById('statHusband').textContent = '$' + husband.toLocaleString();
     document.getElementById('statWife').textContent = '$' + wife.toLocaleString();
 
-    const cats = ['奕安','餐飲','購物','帳單','娛樂','醫療','其他'];
+    const cats = ['奕安','餐飲','購物','其他'];
     const breakdown = document.getElementById('catBreakdown');
     const rows = cats.map(cat => {
       const amt = expense.filter(r => r.category === cat).reduce((s, r) => s + Number(r.amount), 0);
