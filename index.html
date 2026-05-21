@@ -275,7 +275,7 @@
 
 <script>
   // ★ 把你的 Apps Script 網址貼在這裡
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyxrVIof2hGpsPf_5COExeG0MAKKRmuj2CKZOw4bA2QcSeI5mFliFFXjeUvQ_cz3UST/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-TtROANSkWxhittlM4Hc8v0NvK1GMsrWbfKhCuKXgdbKP46ngWQmDQMHOHCldljJ8/exec';
 
   let records = [];
   let whoSelected = '老公';
@@ -548,7 +548,7 @@
       await fetch(SCRIPT_URL, {
         method: 'POST', mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'delete', id: r.id, date: r.date })
+        body: JSON.stringify({ action: 'delete', id: r.id, date: r.date, amount: r.amount, category: r.category })
       });
     } catch(e) {}
     setTimeout(() => loadRecords(), 1500);
