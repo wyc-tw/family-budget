@@ -3,94 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>夫妻記帳本</title>
+<title>♡記帳本</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #f5f3ee;
-    --surface: #ffffff;
-    --border: #e2ddd5;
-    --text: #1a1814;
-    --muted: #7a756c;
-    --accent: #2d6a4f;
-    --accent-light: #e8f4ef;
-    --accent-muted: #74b49b;
-    --husband: #3d5a80;
-    --husband-light: #e8eef5;
-    --wife: #c05c7e;
-    --wife-light: #faedf2;
-    --danger: #c0392b;
-    --mono: 'DM Mono', monospace;
-    --sans: 'Noto Sans TC', sans-serif;
+    --bg: #f5f3ee; --surface: #ffffff; --border: #e2ddd5; --text: #1a1814; --muted: #7a756c;
+    --accent: #2d6a4f; --accent-light: #e8f4ef; --accent-muted: #74b49b;
+    --income: #2563eb; --income-light: #eff6ff;
+    --husband: #3d5a80; --husband-light: #e8eef5;
+    --wife: #c05c7e; --wife-light: #faedf2;
+    --danger: #c0392b; --mono: 'DM Mono', monospace; --sans: 'Noto Sans TC', sans-serif;
   }
-
   body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 20px 32px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-
+  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
   .logo { display: flex; align-items: center; gap: 10px; }
   .logo-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
   .logo-text { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
   .logo-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
-
   .header-right { display: flex; align-items: center; gap: 10px; }
-
-  .header-badge {
-    font-family: var(--mono); font-size: 11px;
-    background: var(--accent-light); color: var(--accent);
-    padding: 4px 10px; border-radius: 20px;
-    border: 1px solid var(--accent-muted); letter-spacing: 0.5px;
-    display: flex; align-items: center; gap: 5px;
-  }
-
+  .header-badge { font-family: var(--mono); font-size: 11px; background: var(--accent-light); color: var(--accent); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--accent-muted); display: flex; align-items: center; gap: 5px; }
   .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; display: inline-block; }
   .status-dot.ok { background: var(--accent); }
   .status-dot.err { background: var(--danger); }
   .status-dot.loading { background: #f59e0b; animation: pulse 1s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-
-  .btn-refresh {
-    padding: 5px 12px; border-radius: 20px;
-    border: 1px solid var(--border); background: var(--surface);
-    font-size: 12px; font-family: var(--sans); cursor: pointer;
-    color: var(--muted); transition: all 0.15s;
-    display: flex; align-items: center; gap: 4px;
-  }
+  .btn-refresh { padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); font-size: 12px; font-family: var(--sans); cursor: pointer; color: var(--muted); transition: all 0.15s; display: flex; align-items: center; gap: 4px; }
   .btn-refresh:hover { border-color: var(--accent); color: var(--accent); }
   .btn-refresh.spinning span { display: inline-block; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* Month tabs */
-  .month-tabs {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-    display: flex; gap: 0; overflow-x: auto;
-  }
-  .month-tab {
-    padding: 12px 18px; font-size: 13px; font-family: var(--sans);
-    border: none; background: none; cursor: pointer;
-    color: var(--muted); border-bottom: 2px solid transparent;
-    white-space: nowrap; transition: all 0.15s;
-  }
+  .month-tabs { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; overflow-x: auto; }
+  .month-tab { padding: 12px 18px; font-size: 13px; font-family: var(--sans); border: none; background: none; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.15s; }
   .month-tab:hover { color: var(--text); }
   .month-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
 
-  main { max-width: 960px; margin: 0 auto; padding: 28px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  main { max-width: 960px; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
   .card { background: var(--surface); border-radius: 14px; border: 1px solid var(--border); overflow: hidden; }
-  .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+  .card-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
   .card-header-title { font-size: 14px; font-weight: 500; }
   .card-body { padding: 20px; }
-
   .form-card { grid-column: 1 / 2; }
+  .stats-card { grid-column: 2 / 3; }
+  .records-card { grid-column: 1 / 3; }
+
+  /* 收入/支出 type toggle */
+  .type-toggle { display: flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 16px; }
+  .type-btn { flex: 1; padding: 10px; border: none; background: var(--bg); font-family: var(--sans); font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--muted); }
+  .type-btn.expense.active { background: var(--accent-light); color: var(--accent); }
+  .type-btn.income.active { background: var(--income-light); color: var(--income); }
+  .type-btn:first-child { border-right: 1px solid var(--border); }
 
   .field { margin-bottom: 14px; }
   .field label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
@@ -100,8 +64,7 @@
   .field textarea { resize: none; height: 60px; }
 
   .amount-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-  .toggle-group { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .toggle-group { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
   .toggle-btn { flex: 1; padding: 9px 12px; border: none; background: var(--bg); font-family: var(--sans); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--muted); }
   .toggle-btn.husband.active { background: var(--husband-light); color: var(--husband); }
   .toggle-btn.wife.active { background: var(--wife-light); color: var(--wife); }
@@ -109,44 +72,47 @@
 
   .cat-grid { display: flex; flex-wrap: wrap; gap: 6px; }
   .cat-pill { padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); font-size: 12px; font-family: var(--sans); cursor: pointer; transition: all 0.15s; color: var(--muted); }
-  .cat-pill:hover { border-color: var(--accent); color: var(--accent); }
   .cat-pill.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); font-weight: 500; }
+  .cat-pill.income-pill.active { background: var(--income-light); border-color: var(--income); color: var(--income); }
 
-  .btn-submit { width: 100%; padding: 11px; background: var(--accent); color: white; border: none; border-radius: 9px; font-family: var(--sans); font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-submit { width: 100%; padding: 11px; background: var(--accent); color: white; border: none; border-radius: 9px; font-family: var(--sans); font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.15s; margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .btn-submit:hover { opacity: 0.88; }
   .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-submit.income-mode { background: var(--income); }
 
-  .stats-card { grid-column: 2 / 3; }
-
+  /* Stats */
   .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
   .stat-box { padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); }
   .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-  .stat-value { font-family: var(--mono); font-size: 20px; font-weight: 500; }
+  .stat-value { font-family: var(--mono); font-size: 18px; font-weight: 500; }
   .stat-value.green { color: var(--accent); }
+  .stat-value.blue { color: var(--income); }
   .stat-value.husband { color: var(--husband); }
   .stat-value.wife { color: var(--wife); }
+  .stat-value.positive { color: var(--accent); }
+  .stat-value.negative { color: var(--danger); }
 
-  .cat-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .cat-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
   .cat-bar-label { font-size: 12px; color: var(--muted); width: 60px; flex-shrink: 0; }
   .cat-bar-track { flex: 1; height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; border: 1px solid var(--border); }
   .cat-bar-fill { height: 100%; border-radius: 3px; background: var(--accent-muted); transition: width 0.4s; }
   .cat-bar-amt { font-family: var(--mono); font-size: 12px; color: var(--muted); width: 70px; text-align: right; flex-shrink: 0; }
 
-  .records-card { grid-column: 1 / 3; }
-
+  /* Records */
   .records-toolbar { display: flex; align-items: center; gap: 8px; padding: 12px 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
   .filter-btn { padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); font-size: 12px; font-family: var(--sans); cursor: pointer; color: var(--muted); transition: all 0.15s; }
   .filter-btn.active { background: var(--text); color: white; border-color: var(--text); }
 
-  .records-list { padding: 0; }
-
-  .record-row { display: grid; grid-template-columns: 90px 1fr 90px 90px 36px; align-items: center; padding: 12px 20px; border-bottom: 1px solid var(--border); font-size: 13px; transition: background 0.1s; }
+  .record-row { display: grid; grid-template-columns: 86px 44px 1fr 90px 80px 36px; align-items: center; padding: 11px 20px; border-bottom: 1px solid var(--border); font-size: 13px; transition: background 0.1s; }
   .record-row:last-child { border-bottom: none; }
   .record-row:hover { background: var(--bg); }
-
   .record-date { font-family: var(--mono); font-size: 12px; color: var(--muted); }
-  .record-cat { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: var(--accent-light); color: var(--accent); margin-right: 6px; }
+  .record-type { font-size: 10px; font-weight: 500; padding: 2px 6px; border-radius: 4px; text-align: center; }
+  .record-type.expense { background: var(--accent-light); color: var(--accent); }
+  .record-type.income { background: var(--income-light); color: var(--income); }
+  .record-cat { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-weight: 500; background: var(--bg); border: 1px solid var(--border); color: var(--muted); margin-right: 5px; }
   .record-amount { font-family: var(--mono); font-weight: 500; text-align: right; }
+  .record-amount.income { color: var(--income); }
   .record-who { text-align: center; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 4px; justify-self: center; }
   .record-who.husband { background: var(--husband-light); color: var(--husband); }
   .record-who.wife { background: var(--wife-light); color: var(--wife); }
@@ -155,14 +121,15 @@
 
   .empty-state { padding: 40px; text-align: center; color: var(--muted); font-size: 14px; }
   .loading-state { padding: 40px; text-align: center; color: var(--muted); font-size: 13px; }
+  .section-label { font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
 
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--text); color: white; padding: 10px 20px; border-radius: 8px; font-size: 13px; transition: transform 0.25s ease; z-index: 100; pointer-events: none; }
   .toast.show { transform: translateX(-50%) translateY(0); }
 
   @media (max-width: 700px) {
-    main { grid-template-columns: 1fr; }
+    main { grid-template-columns: 1fr; padding: 16px; }
     .form-card, .stats-card, .records-card { grid-column: 1 / 2; }
-    .record-row { grid-template-columns: 70px 1fr 70px 30px; }
+    .record-row { grid-template-columns: 80px 38px 1fr 72px 28px; }
     .record-who { display: none; }
   }
 </style>
@@ -173,12 +140,12 @@
   <div class="logo">
     <div class="logo-icon">♡</div>
     <div>
-      <div class="logo-text">夫妻記帳本</div>
+      <div class="logo-text">記帳本</div>
       <div class="logo-sub">共同財務管理</div>
     </div>
   </div>
   <div class="header-right">
-    <button class="btn-refresh" id="refreshBtn" onclick="loadRecords()" aria-label="重新整理">
+    <button class="btn-refresh" id="refreshBtn" onclick="loadRecords()">
       <span>↻</span> 同步
     </button>
     <div class="header-badge">
@@ -188,7 +155,6 @@
   </div>
 </header>
 
-<!-- 月份分頁 -->
 <div class="month-tabs" id="monthTabs"></div>
 
 <main>
@@ -197,32 +163,39 @@
   <div class="card form-card">
     <div class="card-header">
       <span>✏️</span>
-      <span class="card-header-title">新增支出</span>
+      <span class="card-header-title">新增記錄</span>
     </div>
     <div class="card-body">
+
+      <!-- 誰 -->
+      <div class="field">
+        <label>誰</label>
+        <div class="toggle-group">
+          <button class="toggle-btn husband active" id="btnHusband" onclick="selectWho('老公')">👨 老公</button>
+          <button class="toggle-btn wife" id="btnWife" onclick="selectWho('老婆')">👩 老婆</button>
+        </div>
+      </div>
+
+      <!-- 收入/支出切換 -->
+      <div class="type-toggle">
+        <button class="type-btn expense active" id="btnExpense" onclick="selectType('支出')">💸 支出</button>
+        <button class="type-btn income" id="btnIncome" onclick="selectType('收入')">💰 收入</button>
+      </div>
 
       <div class="field">
         <label>日期</label>
         <input type="date" id="inputDate">
       </div>
 
-      <div class="amount-row">
-        <div class="field">
-          <label>金額（元）</label>
-          <input type="number" id="inputAmount" placeholder="0" min="0">
-        </div>
-        <div class="field">
-          <label>誰付款</label>
-          <div class="toggle-group">
-            <button class="toggle-btn husband active" id="btnHusband" onclick="selectWho('老公')">👨 老公</button>
-            <button class="toggle-btn wife" id="btnWife" onclick="selectWho('老婆')">👩 老婆</button>
-          </div>
-        </div>
+      <div class="field">
+        <label>金額（元）</label>
+        <input type="number" id="inputAmount" placeholder="0" min="0">
       </div>
 
       <div class="field">
         <label>分類</label>
-        <div class="cat-grid" id="catGrid">
+        <!-- 支出分類 -->
+        <div class="cat-grid" id="catExpense">
           <button class="cat-pill active" data-cat="奕安" onclick="selectCat(this)">👶 奕安</button>
           <button class="cat-pill" data-cat="餐飲" onclick="selectCat(this)">🍜 餐飲</button>
           <button class="cat-pill" data-cat="購物" onclick="selectCat(this)">🛍 購物</button>
@@ -235,7 +208,7 @@
 
       <div class="field">
         <label>備註（選填）</label>
-        <textarea id="inputNote" placeholder="例：家樂福採購、電費..."></textarea>
+        <textarea id="inputNote" placeholder="例：五月薪資、家樂福採購..."></textarea>
       </div>
 
       <button class="btn-submit" id="submitBtn" onclick="submitRecord()">
@@ -254,23 +227,31 @@
     <div class="card-body">
       <div class="stat-grid">
         <div class="stat-box">
-          <div class="stat-label">總支出</div>
-          <div class="stat-value green" id="statTotal">$0</div>
+          <div class="stat-label">收入</div>
+          <div class="stat-value blue" id="statIncome">$0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">支出</div>
+          <div class="stat-value green" id="statExpense">$0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">結餘</div>
+          <div class="stat-value" id="statBalance">$0</div>
         </div>
         <div class="stat-box">
           <div class="stat-label">筆數</div>
           <div class="stat-value" id="statCount">0 筆</div>
         </div>
         <div class="stat-box">
-          <div class="stat-label">老公付了</div>
+          <div class="stat-label">老公支出</div>
           <div class="stat-value husband" id="statHusband">$0</div>
         </div>
         <div class="stat-box">
-          <div class="stat-label">老婆付了</div>
+          <div class="stat-label">老婆支出</div>
           <div class="stat-value wife" id="statWife">$0</div>
         </div>
       </div>
-      <div style="font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">分類佔比</div>
+      <div class="section-label">支出分類佔比</div>
       <div id="catBreakdown"></div>
     </div>
   </div>
@@ -279,15 +260,15 @@
   <div class="card records-card">
     <div class="card-header">
       <span>📋</span>
-      <span class="card-header-title">支出記錄</span>
+      <span class="card-header-title">記錄</span>
     </div>
     <div class="records-toolbar">
       <button class="filter-btn active" onclick="filterRecords('全部', this)">全部</button>
+      <button class="filter-btn" onclick="filterRecords('支出', this)">支出</button>
+      <button class="filter-btn" onclick="filterRecords('收入', this)">收入</button>
       <button class="filter-btn" onclick="filterRecords('老公', this)">老公</button>
       <button class="filter-btn" onclick="filterRecords('老婆', this)">老婆</button>
       <button class="filter-btn" onclick="filterRecords('奕安', this)">奕安</button>
-      <button class="filter-btn" onclick="filterRecords('餐飲', this)">餐飲</button>
-      <button class="filter-btn" onclick="filterRecords('購物', this)">購物</button>
     </div>
     <div class="records-list" id="recordsList">
       <div class="loading-state">載入中...</div>
@@ -300,47 +281,71 @@
 
 <script>
   // ★ 把你的 Apps Script 網址貼在這裡
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwgY4WyFe6xdyVuJBIikSdwGoz3jQDhCAyGG80u922bUseN6APiAKT-XbbkBc_40K5U/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyfbOEqqEcjmOtV4KinqiXpexWgnac1hfhSr58piX2lMRJbweQKlOVW4I7NUFwqeqPY/exec';
 
   let records = [];
   let whoSelected = '老公';
   let catSelected = '奕安';
+  let typeSelected = '支出';
   let currentFilter = '全部';
   let currentMonth = '';
   let availableMonths = [];
 
-  document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
+  // 台北時區今天日期
+  function todayTW() {
+    const now = new Date();
+    const tw = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+    const y = tw.getFullYear();
+    const m = String(tw.getMonth() + 1).padStart(2, '0');
+    const d = String(tw.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
 
-  // 初始化：載入月份清單，再載入本月資料
+  document.getElementById('inputDate').value = todayTW();
+
+  function selectType(type) {
+    typeSelected = type;
+    const isIncome = type === '收入';
+    document.getElementById('btnExpense').classList.toggle('active', !isIncome);
+    document.getElementById('btnIncome').classList.toggle('active', isIncome);
+    document.getElementById('submitBtn').classList.toggle('income-mode', isIncome);
+  }
+
+  function selectWho(who) {
+    whoSelected = who;
+    document.getElementById('btnHusband').classList.toggle('active', who === '老公');
+    document.getElementById('btnWife').classList.toggle('active', who === '老婆');
+  }
+
+  function selectCat(el) {
+    const grid = el.closest('.cat-grid');
+    grid.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    catSelected = el.dataset.cat;
+  }
+
   async function init() {
     setStatus('loading', '連線中...');
     try {
       const res = await fetch(SCRIPT_URL + '?action=months');
       const data = await res.json();
       availableMonths = data.months || [];
-
-      // 確保本月在清單裡
-      const now = new Date();
-      const thisMonth = now.getFullYear() + '/' + (now.getMonth() + 1);
-      if (!availableMonths.includes(thisMonth)) {
-        availableMonths.unshift(thisMonth);
-      }
-
+      const thisMonth = todayTW().slice(0, 7).replace('-', '/').replace(/\/0/, '/');
+      if (!availableMonths.includes(thisMonth)) availableMonths.unshift(thisMonth);
       currentMonth = thisMonth;
       renderMonthTabs();
       await loadRecords();
       setStatus('ok', '已連接試算表');
     } catch (e) {
       setStatus('err', '連線失敗');
-      document.getElementById('recordsList').innerHTML = '<div class="empty-state">無法連接試算表，請確認網址設定</div>';
+      document.getElementById('recordsList').innerHTML = '<div class="empty-state">無法連接試算表</div>';
     }
   }
 
   function renderMonthTabs() {
-    const tabs = document.getElementById('monthTabs');
-    tabs.innerHTML = availableMonths.map(m => `
-      <button class="month-tab ${m === currentMonth ? 'active' : ''}" onclick="switchMonth('${m}')">${m}</button>
-    `).join('');
+    document.getElementById('monthTabs').innerHTML = availableMonths.map(m =>
+      `<button class="month-tab ${m === currentMonth ? 'active' : ''}" onclick="switchMonth('${m}')">${m}</button>`
+    ).join('');
   }
 
   async function switchMonth(month) {
@@ -354,7 +359,6 @@
     const btn = document.getElementById('refreshBtn');
     btn.classList.add('spinning');
     document.getElementById('recordsList').innerHTML = '<div class="loading-state">載入中...</div>';
-
     try {
       const [year, month] = currentMonth.split('/');
       const res = await fetch(`${SCRIPT_URL}?action=read&year=${year}&month=${month}`);
@@ -372,64 +376,39 @@
   }
 
   function setStatus(type, text) {
-    const dot = document.getElementById('statusDot');
-    dot.className = 'status-dot ' + type;
+    document.getElementById('statusDot').className = 'status-dot ' + type;
     document.getElementById('statusText').textContent = text;
-  }
-
-  function selectWho(who) {
-    whoSelected = who;
-    document.getElementById('btnHusband').classList.toggle('active', who === '老公');
-    document.getElementById('btnWife').classList.toggle('active', who === '老婆');
-  }
-
-  function selectCat(el) {
-    document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
-    el.classList.add('active');
-    catSelected = el.dataset.cat;
   }
 
   async function submitRecord() {
     const date = document.getElementById('inputDate').value;
     const amount = parseFloat(document.getElementById('inputAmount').value);
     const note = document.getElementById('inputNote').value.trim();
+    if (!date || isNaN(amount) || amount <= 0) { showToast('請填寫日期和金額'); return; }
 
-    if (!date || isNaN(amount) || amount <= 0) {
-      showToast('請填寫日期和金額'); return;
-    }
-
-    const record = { date, amount, category: catSelected, who: whoSelected, note };
-
+    const record = { date, type: typeSelected, amount, category: catSelected, who: whoSelected, note };
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
     btn.querySelector('span').textContent = '送出中...';
 
     try {
       await fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
+        method: 'POST', mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(record)
       });
-
       document.getElementById('inputAmount').value = '';
       document.getElementById('inputNote').value = '';
       showToast('已新增，正在同步...');
-
-      // 寫入後稍等一秒再拉資料（Sheet 需要一點時間寫入）
       setTimeout(async () => {
-        // 如果新增的月份不在清單裡，加進去
         const [y, m] = date.split('-');
         const newMonth = y + '/' + parseInt(m);
-        if (!availableMonths.includes(newMonth)) {
-          availableMonths.unshift(newMonth);
-        }
+        if (!availableMonths.includes(newMonth)) availableMonths.unshift(newMonth);
         currentMonth = newMonth;
         renderMonthTabs();
         await loadRecords();
         showToast('同步完成 ✓');
       }, 1200);
-
     } catch (e) {
       showToast('新增失敗，請重試');
     } finally {
@@ -449,22 +428,24 @@
     const list = document.getElementById('recordsList');
     let filtered = records;
     if (currentFilter !== '全部') {
-      filtered = records.filter(r => r.who === currentFilter || r.category === currentFilter);
+      filtered = records.filter(r =>
+        r.type === currentFilter || r.who === currentFilter || r.category === currentFilter
+      );
     }
-
     if (filtered.length === 0) {
-      list.innerHTML = '<div class="empty-state">這個月還沒有記錄</div>';
-      return;
+      list.innerHTML = '<div class="empty-state">這個月還沒有記錄</div>'; return;
     }
-
     list.innerHTML = filtered.map((r, i) => `
       <div class="record-row">
-        <div class="record-date">${formatDate(r.date)}</div>
+        <div class="record-date">${r.date}</div>
+        <div class="record-type ${r.type === '收入' ? 'income' : 'expense'}">${r.type}</div>
         <div>
           <span class="record-cat">${r.category}</span>
           <span>${r.note || '—'}</span>
         </div>
-        <div class="record-amount">$${Number(r.amount).toLocaleString()}</div>
+        <div class="record-amount ${r.type === '收入' ? 'income' : ''}">
+          ${r.type === '收入' ? '+' : ''}$${Number(r.amount).toLocaleString()}
+        </div>
         <div class="record-who ${r.who === '老公' ? 'husband' : 'wife'}">${r.who}</div>
         <button class="record-del" onclick="confirmDelete(${i})" title="刪除">✕</button>
       </div>
@@ -472,11 +453,19 @@
   }
 
   function renderStats() {
-    const total = records.reduce((s, r) => s + Number(r.amount), 0);
-    const husband = records.filter(r => r.who === '老公').reduce((s, r) => s + Number(r.amount), 0);
-    const wife = records.filter(r => r.who === '老婆').reduce((s, r) => s + Number(r.amount), 0);
+    const expense = records.filter(r => r.type !== '收入');
+    const income = records.filter(r => r.type === '收入');
+    const totalExpense = expense.reduce((s, r) => s + Number(r.amount), 0);
+    const totalIncome = income.reduce((s, r) => s + Number(r.amount), 0);
+    const balance = totalIncome - totalExpense;
+    const husband = expense.filter(r => r.who === '老公').reduce((s, r) => s + Number(r.amount), 0);
+    const wife = expense.filter(r => r.who === '老婆').reduce((s, r) => s + Number(r.amount), 0);
 
-    document.getElementById('statTotal').textContent = '$' + total.toLocaleString();
+    document.getElementById('statIncome').textContent = '$' + totalIncome.toLocaleString();
+    document.getElementById('statExpense').textContent = '$' + totalExpense.toLocaleString();
+    const balEl = document.getElementById('statBalance');
+    balEl.textContent = (balance >= 0 ? '+$' : '-$') + Math.abs(balance).toLocaleString();
+    balEl.className = 'stat-value ' + (balance >= 0 ? 'positive' : 'negative');
     document.getElementById('statCount').textContent = records.length + ' 筆';
     document.getElementById('statHusband').textContent = '$' + husband.toLocaleString();
     document.getElementById('statWife').textContent = '$' + wife.toLocaleString();
@@ -484,19 +473,15 @@
     const cats = ['奕安','餐飲','購物','帳單','娛樂','醫療','其他'];
     const breakdown = document.getElementById('catBreakdown');
     const rows = cats.map(cat => {
-      const amt = records.filter(r => r.category === cat).reduce((s, r) => s + Number(r.amount), 0);
+      const amt = expense.filter(r => r.category === cat).reduce((s, r) => s + Number(r.amount), 0);
       if (amt === 0) return '';
-      const pct = total > 0 ? Math.round(amt / total * 100) : 0;
-      const label = cat.length > 5 ? cat.slice(0, 5) : cat;
-      return `
-        <div class="cat-row">
-          <div class="cat-bar-label">${label}</div>
-          <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${pct}%"></div></div>
-          <div class="cat-bar-amt">$${amt.toLocaleString()}</div>
-        </div>
-      `;
+      const pct = totalExpense > 0 ? Math.round(amt / totalExpense * 100) : 0;
+      return `<div class="cat-row">
+        <div class="cat-bar-label">${cat}</div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${pct}%"></div></div>
+        <div class="cat-bar-amt">$${amt.toLocaleString()}</div>
+      </div>`;
     }).join('');
-
     breakdown.innerHTML = rows || '<div style="font-size:13px;color:var(--muted);">本月尚無支出</div>';
   }
 
@@ -507,47 +492,25 @@
     setTimeout(() => t.classList.remove('show'), 2500);
   }
 
-  // 日期格式化，相容台北時區（處理 Date 物件或字串）
-  function formatDate(val) {
-    if (!val) return '—';
-    // 如果已經是 YYYY-MM-DD 字串直接取前10碼
-    if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}/.test(val)) {
-      return val.slice(0, 10);
-    }
-    // 如果是 Date 物件或其他格式，用台北時區格式化
-    const d = new Date(val);
-    if (isNaN(d)) return String(val).slice(0, 10);
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  }
-
   function confirmDelete(index) {
     const r = records[index];
-    if (!confirm(`確定刪除這筆記錄？\n${formatDate(r.date)}　${r.category}　$${r.amount}　${r.note || ''}`)) return;
+    if (!confirm(`確定刪除？\n${r.date}　${r.type}　${r.category}　$${r.amount}${r.note ? '　' + r.note : ''}`)) return;
     deleteRecord(index);
   }
 
   async function deleteRecord(index) {
     const r = records[index];
-    // 樂觀更新：先從畫面移除
     records.splice(index, 1);
     renderRecords();
     renderStats();
     showToast('已刪除');
-
-    // 通知 Apps Script 刪除（需要 Script 支援，否則只是本地移除，重整後會再出現）
     try {
       await fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
+        method: 'POST', mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'delete', id: r.id, date: r.date })
       });
     } catch(e) {}
-
-    // 重新拉資料確保同步
     setTimeout(() => loadRecords(), 1500);
   }
 
