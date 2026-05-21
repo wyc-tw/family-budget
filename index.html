@@ -137,7 +137,7 @@
   <div class="logo">
     <div class="logo-icon">♡</div>
     <div>
-      <div class="logo-text">♡記帳本</div>
+      <div class="logo-text">記帳本</div>
       <div class="logo-sub">共同財務管理</div>
     </div>
   </div>
@@ -318,32 +318,44 @@
     catSelected = el.dataset.cat;
   }
 
-  // JSONP 讀取，繞過 CORS 限制
-  function jsonp(url) {
+  // 用 fetch 讀取，處理 Google 轉址
+  function fetchData(url) {
     return new Promise((resolve, reject) => {
-      const cbName = 'cb_' + Date.now();
+      const cbName = 'cb_' + Date.now() + '_' + Math.floor(Math.random()*10000);
       const script = document.createElement('script');
-      const timeout = setTimeout(() => {
+      let done = false;
+
+      const cleanup = () => {
+        done = true;
         delete window[cbName];
-        document.body.removeChild(script);
-        reject(new Error('timeout'));
-      }, 10000);
+        if (script.parentNode) script.parentNode.removeChild(script);
+      };
+
+      const timeout = setTimeout(() => {
+        if (!done) { cleanup(); reject(new Error('timeout')); }
+      }, 15000);
+
       window[cbName] = (data) => {
         clearTimeout(timeout);
-        delete window[cbName];
-        document.body.removeChild(script);
+        cleanup();
         resolve(data);
       };
-      script.src = url + '&callback=' + cbName;
-      script.onerror = () => { clearTimeout(timeout); reject(new Error('script error')); };
-      document.body.appendChild(script);
+
+      // 加上時間戳避免快取
+      script.src = url + '&callback=' + cbName + '&_t=' + Date.now();
+      script.onerror = () => {
+        clearTimeout(timeout);
+        cleanup();
+        reject(new Error('載入失敗'));
+      };
+      document.head.appendChild(script);
     });
   }
 
   async function init() {
     setStatus('loading', '連線中...');
     try {
-      const data = await jsonp(SCRIPT_URL + '?action=months');
+      const data = await fetchData(SCRIPT_URL + '?action=months');
       availableMonths = data.months || [];
       const thisMonth = todayTW().slice(0, 7).replace('-', '/').replace(/\/0/, '/');
       if (!availableMonths.includes(thisMonth)) availableMonths.unshift(thisMonth);
@@ -376,7 +388,7 @@
     document.getElementById('recordsList').innerHTML = '<div class="loading-state">載入中...</div>';
     try {
       const [year, month] = currentMonth.split('/');
-      const data = await jsonp(`${SCRIPT_URL}?action=read&year=${year}&month=${month}`);
+      const data = await fetchData(`${SCRIPT_URL}?action=read&year=${year}&month=${month}`);
       records = data.records || [];
       renderRecords();
       renderStats();
