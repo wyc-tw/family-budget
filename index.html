@@ -531,16 +531,16 @@
   }
 
   function confirmDelete(id) {
-    const r = records.find(r => r.id === id);
+    const r = records.find(r => String(r.id) === String(id));
     if (!r) return;
     if (!confirm(`確定刪除？\n${r.date}　${r.type}　${r.category}　$${r.amount}${r.note ? '　' + r.note : ''}`)) return;
-    deleteRecord(id);
+    deleteRecord(String(id));
   }
 
   async function deleteRecord(id) {
-    const r = records.find(r => r.id === id);
+    const r = records.find(r => String(r.id) === String(id));
     if (!r) return;
-    records = records.filter(r => r.id !== id);
+    records = records.filter(r => String(r.id) !== String(id));
     renderRecords();
     renderStats();
     showToast('已刪除');
@@ -548,7 +548,7 @@
       await fetch(SCRIPT_URL, {
         method: 'POST', mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'delete', id: r.id, date: r.date, amount: r.amount, category: r.category })
+        body: JSON.stringify({ action: 'delete', id: String(r.id), date: r.date, amount: r.amount, category: r.category })
       });
     } catch(e) {}
     setTimeout(() => loadRecords(), 1500);
