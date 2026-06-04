@@ -317,6 +317,33 @@
     catSelected = el.dataset.cat;
   }
 
+  // ── 快取工具 ──────────────────────────────────
+  const CACHE_KEY = 'budget_cache';
+
+  function saveCache(month, data) {
+    try {
+      const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+      cache[month] = { records: data, ts: Date.now() };
+      localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+    } catch(e) {}
+  }
+
+  function loadCache(month) {
+    try {
+      const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+      return cache[month] ? cache[month].records : null;
+    } catch(e) { return null; }
+  }
+
+  function saveMonthsCache(months) {
+    try { localStorage.setItem('budget_months', JSON.stringify(months)); } catch(e) {}
+  }
+
+  function loadMonthsCache() {
+    try { return JSON.parse(localStorage.getItem('budget_months') || 'null'); } catch(e) { return null; }
+  }
+  // ─────────────────────────────────────────────
+
   // 用 fetch 讀取，處理 Google 轉址
   function fetchData(url) {
     return new Promise((resolve, reject) => {
@@ -340,7 +367,6 @@
         resolve(data);
       };
 
-      // 加上時間戳避免快取
       script.src = url + '&callback=' + cbName + '&_t=' + Date.now();
       script.onerror = () => {
         clearTimeout(timeout);
@@ -353,21 +379,46 @@
 
   async function init() {
     setStatus('loading', '連線中...');
+
+    // 1. 先用快取立刻顯示
+    const now = todayTW().split('-');
+    const thisMonth = now[0] + '/' + parseInt(now[1]);
+    const cachedMonths = loadMonthsCache();
+    const cachedRecords = loadCache(thisMonth);
+
+    if (cachedMonths) {
+      availableMonths = cachedMonths;
+      if (!availableMonths.includes(thisMonth)) availableMonths.unshift(thisMonth);
+      currentMonth = thisMonth;
+      renderMonthTabs();
+    }
+    if (cachedRecords) {
+      records = cachedRecords;
+      renderRecords();
+      renderStats();
+      setStatus('loading', '同步中...');
+    }
+
+    // 2. 背景從 Sheets 更新
     try {
-      const now = todayTW().split('-');
       const data = await fetchData(`${SCRIPT_URL}?action=init&year=${now[0]}&month=${parseInt(now[1])}`);
       availableMonths = data.months || [];
-      const thisMonth = now[0] + '/' + parseInt(now[1]);
       if (!availableMonths.includes(thisMonth)) availableMonths.unshift(thisMonth);
       currentMonth = thisMonth;
       records = data.records || [];
+      saveMonthsCache(availableMonths);
+      saveCache(thisMonth, records);
       renderMonthTabs();
       renderRecords();
       renderStats();
       setStatus('ok', '已連接試算表');
     } catch (e) {
-      setStatus('err', '連線失敗');
-      document.getElementById('recordsList').innerHTML = '<div class="empty-state">無法連接試算表</div>';
+      if (cachedRecords) {
+        setStatus('err', '離線（顯示快取）');
+      } else {
+        setStatus('err', '連線失敗');
+        document.getElementById('recordsList').innerHTML = '<div class="empty-state">無法連接試算表</div>';
+      }
     }
   }
 
@@ -381,23 +432,43 @@
     currentMonth = month;
     renderMonthTabs();
     document.getElementById('statsTitle').textContent = month + ' 統計';
-    await loadRecords();
+
+    // 先顯示快取
+    const cached = loadCache(month);
+    if (cached) {
+      records = cached;
+      renderRecords();
+      renderStats();
+      setStatus('loading', '同步中...');
+    } else {
+      document.getElementById('recordsList').innerHTML = '<div class="loading-state">載入中...</div>';
+    }
+
+    // 背景更新
+    await loadRecords(false);
   }
 
-  async function loadRecords() {
+  async function loadRecords(showSpinner = true) {
     const btn = document.getElementById('refreshBtn');
-    btn.classList.add('spinning');
-    document.getElementById('recordsList').innerHTML = '<div class="loading-state">載入中...</div>';
+    if (showSpinner) {
+      btn.classList.add('spinning');
+      document.getElementById('recordsList').innerHTML = '<div class="loading-state">載入中...</div>';
+    } else {
+      btn.classList.add('spinning');
+    }
     try {
       const [year, month] = currentMonth.split('/');
       const data = await fetchData(`${SCRIPT_URL}?action=read&year=${year}&month=${month}`);
       records = data.records || [];
+      saveCache(currentMonth, records);
       renderRecords();
       renderStats();
       setStatus('ok', '已連接試算表');
     } catch (e) {
       setStatus('err', '同步失敗');
-      document.getElementById('recordsList').innerHTML = '<div class="empty-state">載入失敗，請點同步重試</div>';
+      if (showSpinner) {
+        document.getElementById('recordsList').innerHTML = '<div class="empty-state">載入失敗，請點同步重試</div>';
+      }
     } finally {
       btn.classList.remove('spinning');
     }
@@ -414,34 +485,44 @@
     const note = document.getElementById('inputNote').value.trim();
     if (!date || isNaN(amount) || amount <= 0) { showToast('請填寫日期和金額'); return; }
 
-    const record = { date, type: typeSelected, amount, category: catSelected, who: whoSelected, note };
+    const record = {
+      date, type: typeSelected, amount, category: catSelected,
+      who: whoSelected, note, id: Date.now().toString()
+    };
+
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
     btn.querySelector('span').textContent = '送出中...';
 
+    // 樂觀更新：立刻加進畫面
+    const [y, m] = date.split('-');
+    const newMonth = y + '/' + parseInt(m);
+    if (!availableMonths.includes(newMonth)) {
+      availableMonths.unshift(newMonth);
+      saveMonthsCache(availableMonths);
+    }
+    currentMonth = newMonth;
+    renderMonthTabs();
+    records.unshift(record);
+    saveCache(currentMonth, records);
+    renderRecords();
+    renderStats();
+    document.getElementById('inputAmount').value = '';
+    document.getElementById('inputNote').value = '';
+    showToast('已新增 ✓');
+    btn.disabled = false;
+    btn.querySelector('span').textContent = '＋ 新增記錄';
+
+    // 背景送到 Sheets，完成後靜默同步
     try {
       await fetch(SCRIPT_URL, {
         method: 'POST', mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(record)
       });
-      document.getElementById('inputAmount').value = '';
-      document.getElementById('inputNote').value = '';
-      showToast('已新增，正在同步...');
-      setTimeout(async () => {
-        const [y, m] = date.split('-');
-        const newMonth = y + '/' + parseInt(m);
-        if (!availableMonths.includes(newMonth)) availableMonths.unshift(newMonth);
-        currentMonth = newMonth;
-        renderMonthTabs();
-        await loadRecords();
-        showToast('同步完成 ✓');
-      }, 1200);
+      setTimeout(() => loadRecords(false), 1200);
     } catch (e) {
-      showToast('新增失敗，請重試');
-    } finally {
-      btn.disabled = false;
-      btn.querySelector('span').textContent = '＋ 新增記錄';
+      showToast('網路異常，資料可能未同步');
     }
   }
 
