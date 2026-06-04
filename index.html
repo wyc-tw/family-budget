@@ -202,7 +202,7 @@
 
       <div class="field">
         <label>備註（選填）</label>
-        <textarea id="inputNote" placeholder="例：午餐、奕安奶粉、家樂福採購..."></textarea>
+        <textarea id="inputNote" placeholder="例：五月薪資、家樂福採購..."></textarea>
       </div>
 
       <button class="btn-submit" id="submitBtn" onclick="submitRecord()">
@@ -354,13 +354,16 @@
   async function init() {
     setStatus('loading', '連線中...');
     try {
-      const data = await fetchData(SCRIPT_URL + '?action=months');
+      const now = todayTW().split('-');
+      const data = await fetchData(`${SCRIPT_URL}?action=init&year=${now[0]}&month=${parseInt(now[1])}`);
       availableMonths = data.months || [];
-      const thisMonth = todayTW().slice(0, 7).replace('-', '/').replace(/\/0/, '/');
+      const thisMonth = now[0] + '/' + parseInt(now[1]);
       if (!availableMonths.includes(thisMonth)) availableMonths.unshift(thisMonth);
       currentMonth = thisMonth;
+      records = data.records || [];
       renderMonthTabs();
-      await loadRecords();
+      renderRecords();
+      renderStats();
       setStatus('ok', '已連接試算表');
     } catch (e) {
       setStatus('err', '連線失敗');
