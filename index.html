@@ -107,7 +107,7 @@
   .filter-btn { padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); font-size: 12px; font-family: var(--sans); cursor: pointer; color: var(--muted); transition: all 0.15s; }
   .filter-btn.active { background: var(--text); color: white; border-color: var(--text); }
 
-  .record-row { display: grid; grid-template-columns: 55px 1fr 90px 32px; align-items: center; gap: 10px; padding: 11px 20px; border-bottom: 1px solid var(--border); font-size: 13px; transition: background 0.1s; }
+  .record-row { display: grid; grid-template-columns: 55px 1fr 90px 60px; align-items: center; gap: 10px; padding: 11px 20px; border-bottom: 1px solid var(--border); font-size: 13px; transition: background 0.1s; }
   .record-row:last-child { border-bottom: none; }
   .record-row:hover { background: var(--bg); }
   .record-date { font-family: var(--mono); font-size: 12px; color: var(--muted); }
@@ -120,6 +120,23 @@
   .record-amount.income { color: var(--income); }
   .record-del { justify-self: end; background: none; border: none; cursor: pointer; color: var(--border); font-size: 14px; transition: color 0.15s; padding: 4px; }
   .record-del:hover { color: var(--danger); }
+  .record-edit { background: none; border: none; cursor: pointer; color: var(--border); font-size: 14px; transition: color 0.15s; padding: 4px; }
+  .record-edit:hover { color: var(--accent); }
+
+  /* 編輯 Modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.hidden { display: none; }
+  .modal { background: var(--surface); border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+  .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 20px; }
+  .modal-field { margin-bottom: 14px; }
+  .modal-field label { display: block; font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+  .modal-field input, .modal-field select { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: var(--sans); background: var(--bg); color: var(--text); outline: none; -webkit-appearance: none; }
+  .modal-field input:focus, .modal-field select:focus { border-color: var(--accent); background: white; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+  .modal-btn { flex: 1; padding: 10px; border-radius: 9px; font-size: 14px; font-family: var(--sans); font-weight: 500; cursor: pointer; border: none; transition: opacity 0.15s; }
+  .modal-btn.cancel { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+  .modal-btn.save { background: var(--accent); color: white; }
+  .modal-btn:hover { opacity: 0.85; }
 
   .empty-state { padding: 40px; text-align: center; color: var(--muted); font-size: 14px; }
   .loading-state { padding: 40px; text-align: center; color: var(--muted); font-size: 13px; }
@@ -131,7 +148,7 @@
   @media (max-width: 700px) {
     main { grid-template-columns: 1fr; padding: 16px; }
     .form-card, .stats-card, .records-card { grid-column: 1 / 2; }
-    .record-row { grid-template-columns: 48px 1fr 70px 28px; gap: 8px; }
+    .record-row { grid-template-columns: 48px 1fr 70px 52px; gap: 8px; }
   }
 </style>
 </head>
@@ -274,11 +291,42 @@
 
 </main>
 
+<div class="modal-overlay hidden" id="editModal">
+  <div class="modal">
+    <div class="modal-title">編輯記錄</div>
+    <div class="modal-field">
+      <label>日期</label>
+      <input type="date" id="editDate">
+    </div>
+    <div class="modal-field">
+      <label>金額</label>
+      <input type="number" id="editAmount" min="0">
+    </div>
+    <div class="modal-field">
+      <label>分類</label>
+      <select id="editCategory">
+        <option>奕安</option>
+        <option>餐飲</option>
+        <option>購物</option>
+        <option>其他</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label>備註</label>
+      <input type="text" id="editNote" placeholder="備註（選填）">
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeEdit()">取消</button>
+      <button class="modal-btn save" onclick="saveEdit()">儲存</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
   // ★ 把你的 Apps Script 網址貼在這裡
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwvVNEXfoBoa9xEd1aGRzBdp5AANPqFyhvTcbiXI_LjeN3o0kjr-LPo4raTDXP0hsvz/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxAyuRVJ3DbBFjkL23p4oXWMU8SrJPoFfkagznMb4kV0XN9X_G7pp_ZVqFb2zOSRhGh/exec';
 
   let records = [];
   let whoSelected = '老公';
@@ -560,7 +608,10 @@
         <div class="record-amount ${r.type === '收入' ? 'income' : ''}">
           ${r.type === '收入' ? '+' : ''}$${Number(r.amount).toLocaleString()}
         </div>
-        <button class="record-del" onclick="confirmDelete('${r.id}')" title="刪除">✕</button>
+        <div style="display:flex;justify-content:flex-end;gap:2px;">
+          <button class="record-edit" onclick="openEdit('${r.id}')" title="編輯">✎</button>
+          <button class="record-del" onclick="confirmDelete('${r.id}')" title="刪除">✕</button>
+        </div>
       </div>
     `).join('');
   }
@@ -640,6 +691,71 @@
     } catch(e) {}
     setTimeout(() => loadRecords(), 1500);
   }
+
+  let editingId = null;
+
+  function openEdit(id) {
+    const r = records.find(r => String(r.id) === String(id));
+    if (!r) return;
+    editingId = id;
+    document.getElementById('editDate').value = r.date;
+    document.getElementById('editAmount').value = r.amount;
+    document.getElementById('editCategory').value = r.category;
+    document.getElementById('editNote').value = r.note || '';
+    document.getElementById('editModal').classList.remove('hidden');
+  }
+
+  function closeEdit() {
+    editingId = null;
+    document.getElementById('editModal').classList.add('hidden');
+  }
+
+  async function saveEdit() {
+    const r = records.find(r => String(r.id) === String(editingId));
+    if (!r) return;
+
+    const newDate = document.getElementById('editDate').value;
+    const newAmount = parseFloat(document.getElementById('editAmount').value);
+    const newCategory = document.getElementById('editCategory').value;
+    const newNote = document.getElementById('editNote').value.trim();
+
+    if (!newDate || isNaN(newAmount) || newAmount <= 0) {
+      showToast('請填寫日期和金額'); return;
+    }
+
+    // 樂觀更新
+    r.date = newDate;
+    r.amount = newAmount;
+    r.category = newCategory;
+    r.note = newNote;
+    saveCache(currentMonth, records);
+    renderRecords();
+    renderStats();
+    closeEdit();
+    showToast('已更新 ✓');
+
+    // 送到 Apps Script（先刪再新增）
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete', id: r.id, date: newDate, amount: newAmount, category: newCategory })
+      });
+      await fetch(SCRIPT_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...r, date: newDate, amount: newAmount, category: newCategory, note: newNote })
+      });
+      setTimeout(() => loadRecords(false), 1500);
+    } catch(e) {
+      showToast('網路異常，請手動同步');
+    }
+  }
+
+  // 點 modal 背景關閉
+  document.getElementById('editModal').addEventListener('click', function(e) {
+    if (e.target === this) closeEdit();
+  });
 
   init();
 </script>
