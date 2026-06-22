@@ -132,16 +132,15 @@
 
   /* 桌機 hover 按鈕 */
   .record-hover-actions { display: none; gap: 4px; justify-content: flex-end; }
-  .hover-btn { background: none; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 12px; padding: 4px 10px; font-family: var(--sans); color: var(--muted); transition: all 0.15s; }
+  .hover-btn { background: none; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 12px; padding: 4px 10px; font-family: var(--sans); color: var(--muted); transition: all 0.15s; white-space: nowrap; }
   .hover-btn.edit { color: var(--accent); border-color: var(--accent-muted); background: var(--accent-light); }
   .hover-btn.del { color: var(--danger); border-color: #f5c6c2; background: #fdecea; }
   .hover-btn:hover { opacity: 0.8; }
 
   @media (hover: hover) {
-    .record-row { grid-template-columns: 55px 1fr 90px 80px; }
-    .record-hover-actions { display: flex; opacity: 0; transition: opacity 0.15s; }
+    .record-row { grid-template-columns: 55px 1fr 90px 150px; }
+    .record-hover-actions { display: flex; opacity: 0; transition: opacity 0.15s; gap: 6px; }
     .record-wrapper:hover .record-hover-actions { opacity: 1; }
-    /* 桌機隱藏左滑按鈕 */
     .record-actions { display: none; }
   }
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; }
