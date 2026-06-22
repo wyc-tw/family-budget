@@ -117,17 +117,20 @@
   .action-btn.del-btn { background: #fdecea; color: var(--danger); }
   .action-btn .action-icon { font-size: 14px; line-height: 1; }
   .record-wrapper.swiped .record-actions { transform: translateX(0); }
-  .record-wrapper.swiped .record-row { transform: translateX(-160px); }
+  .record-wrapper.swiped .record-row { transform: translateX(-160px); transition: transform 0.25s ease; }
 
-  .record-row { display: grid; grid-template-columns: 55px 1fr 90px; align-items: center; gap: 10px; padding: 13px 20px; font-size: 13px; transition: transform 0.25s ease, background 0.1s; background: var(--surface); }
+  .record-row { display: flex; flex-direction: column; gap: 4px; padding: 12px 20px; font-size: 13px; transition: background 0.1s; background: var(--surface); }
   .record-row:hover { background: var(--bg); }
-  .record-date { font-family: var(--mono); font-size: 12px; color: var(--muted); }
-  .tag { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: var(--bg); border: 1px solid var(--border); color: var(--muted); white-space: nowrap; }
-  .tag.husband { background: var(--husband-light); border-color: var(--husband-light); color: var(--husband); }
-  .tag.wife { background: var(--wife-light); border-color: var(--wife-light); color: var(--wife); }
-  .tag.expense { background: var(--accent-light); border-color: var(--accent-light); color: var(--accent); }
-  .tag.income { background: var(--income-light); border-color: var(--income-light); color: var(--income); }
-  .record-amount { font-family: var(--mono); font-weight: 500; text-align: right; }
+  .record-row-top { display: flex; align-items: center; gap: 8px; }
+  .record-row-bottom { display: flex; align-items: center; justify-content: space-between; padding-left: 2px; }
+  .record-date { font-family: var(--mono); font-size: 11px; color: var(--muted); flex-shrink: 0; }
+  .record-who-tag { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; flex-shrink: 0; }
+  .record-who-tag.husband { background: var(--husband-light); color: var(--husband); }
+  .record-who-tag.wife { background: var(--wife-light); color: var(--wife); }
+  .record-cat-text { font-size: 12px; color: var(--muted); flex-shrink: 0; }
+  .record-note { font-size: 13px; color: var(--text); flex: 1; }
+  .record-note.empty { color: var(--muted); font-size: 12px; }
+  .record-amount { font-family: var(--mono); font-weight: 500; font-size: 14px; flex-shrink: 0; }
   .record-amount.income { color: var(--income); }
 
   /* 桌機 hover 按鈕 */
@@ -138,7 +141,6 @@
   .hover-btn:hover { opacity: 0.8; }
 
   @media (hover: hover) {
-    .record-row { grid-template-columns: 55px 1fr 90px 150px; }
     .record-hover-actions { display: flex; opacity: 0; transition: opacity 0.15s; gap: 6px; }
     .record-wrapper:hover .record-hover-actions { opacity: 1; }
     .record-actions { display: none; }
@@ -167,7 +169,7 @@
   @media (max-width: 700px) {
     main { grid-template-columns: 1fr; padding: 16px; }
     .form-card, .stats-card, .records-card { grid-column: 1 / 2; }
-    .record-row { grid-template-columns: 48px 1fr 70px; gap: 8px; }
+    .record-row { padding: 11px 16px; }
   }
 </style>
 </head>
@@ -622,19 +624,21 @@
     list.innerHTML = filtered.map((r) => `
       <div class="record-wrapper" data-id="${r.id}">
         <div class="record-row">
-          <div class="record-date">${formatDate(r.date)}</div>
-          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-            <span class="tag ${r.who === '老公' ? 'husband' : 'wife'}">${r.who}</span>
-            <span class="tag ${r.type === '收入' ? 'income' : 'expense'}">${r.type}</span>
-            <span class="tag">${r.category}</span>
-            <span style="font-size:13px;color:var(--text);">${r.note || ''}</span>
+          <div class="record-row-top">
+            <span class="record-date">${formatDate(r.date)}</span>
+            <span class="record-who-tag ${r.who === '老公' ? 'husband' : 'wife'}">${r.who}</span>
+            <span class="record-cat-text">${r.category}</span>
+            ${r.type === '收入' ? '<span style="font-size:11px;color:var(--income);font-weight:500;">收入</span>' : ''}
+            <div class="record-hover-actions" style="margin-left:auto;">
+              <button class="hover-btn edit" onclick="openEdit('${r.id}')">✎ 編輯</button>
+              <button class="hover-btn del" onclick="confirmDelete('${r.id}')">✕ 刪除</button>
+            </div>
           </div>
-          <div class="record-amount ${r.type === '收入' ? 'income' : ''}">
-            ${r.type === '收入' ? '+' : ''}$${Number(r.amount).toLocaleString()}
-          </div>
-          <div class="record-hover-actions">
-            <button class="hover-btn edit" onclick="openEdit('${r.id}')">✎ 編輯</button>
-            <button class="hover-btn del" onclick="confirmDelete('${r.id}')">✕ 刪除</button>
+          <div class="record-row-bottom">
+            <span class="record-note ${r.note ? '' : 'empty'}">${r.note || '—'}</span>
+            <span class="record-amount ${r.type === '收入' ? 'income' : ''}">
+              ${r.type === '收入' ? '+' : ''}$${Number(r.amount).toLocaleString()}
+            </span>
           </div>
         </div>
         <div class="record-actions">
