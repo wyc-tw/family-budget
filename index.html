@@ -169,6 +169,9 @@
   @media (max-width: 700px) {
     main { grid-template-columns: 1fr; padding: 16px; }
     .form-card, .stats-card, .records-card { grid-column: 1 / 2; }
+    .form-card { order: 1; }
+    .records-card { order: 2; }
+    .stats-card { order: 3; }
     .record-row { padding: 11px 16px; }
   }
 </style>
@@ -237,6 +240,7 @@
           <button class="cat-pill" data-cat="買菜" onclick="selectCat(this)">🥦 買菜</button>
           <button class="cat-pill" data-cat="購物" onclick="selectCat(this)">🛍 購物</button>
           <button class="cat-pill" data-cat="交通" onclick="selectCat(this)">🚗 交通</button>
+          <button class="cat-pill" data-cat="旅遊" onclick="selectCat(this)">✈️ 旅遊</button>
           <button class="cat-pill" data-cat="其他" onclick="selectCat(this)">📦 其他</button>
         </div>
       </div>
@@ -342,6 +346,7 @@
         <option>買菜</option>
         <option>購物</option>
         <option>交通</option>
+        <option>旅遊</option>
         <option>其他</option>
       </select>
     </div>
@@ -691,7 +696,7 @@
     wifeEl.textContent = (wifeTransfer < 0 ? '-$' : '$') + Math.abs(wifeTransfer).toLocaleString();
     wifeEl.style.color = wifeTransfer < 0 ? 'var(--danger)' : 'var(--wife)';
 
-    const cats = ['奕安','晚餐','點心','買菜','購物','交通','其他'];
+    const cats = ['奕安','晚餐','點心','買菜','購物','交通','旅遊','其他'];
     const breakdown = document.getElementById('catBreakdown');
     const rows = cats.map(cat => {
       const amt = expense.filter(r => r.category === cat).reduce((s, r) => s + Number(r.amount), 0);
