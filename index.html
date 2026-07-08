@@ -235,7 +235,7 @@
         <!-- 支出分類 -->
         <div class="cat-grid" id="catExpense">
           <button class="cat-pill active" data-cat="奕安" onclick="selectCat(this)">👶 奕安</button>
-          <button class="cat-pill" data-cat="晚餐" onclick="selectCat(this)">🍽 晚餐</button>
+          <button class="cat-pill" data-cat="三餐" onclick="selectCat(this)">🍽 三餐</button>
           <button class="cat-pill" data-cat="點心" onclick="selectCat(this)">🧁 點心</button>
           <button class="cat-pill" data-cat="買菜" onclick="selectCat(this)">🥦 買菜</button>
           <button class="cat-pill" data-cat="購物" onclick="selectCat(this)">🛍 購物</button>
@@ -341,7 +341,7 @@
       <label>分類</label>
       <select id="editCategory">
         <option>奕安</option>
-        <option>晚餐</option>
+        <option>三餐</option>
         <option>點心</option>
         <option>買菜</option>
         <option>購物</option>
@@ -696,7 +696,7 @@
     wifeEl.textContent = (wifeTransfer < 0 ? '-$' : '$') + Math.abs(wifeTransfer).toLocaleString();
     wifeEl.style.color = wifeTransfer < 0 ? 'var(--danger)' : 'var(--wife)';
 
-    const cats = ['奕安','晚餐','點心','買菜','購物','交通','旅遊','其他'];
+    const cats = ['奕安','三餐','點心','買菜','購物','交通','旅遊','其他'];
     const breakdown = document.getElementById('catBreakdown');
     const rows = cats.map(cat => {
       const amt = expense.filter(r => r.category === cat).reduce((s, r) => s + Number(r.amount), 0);
