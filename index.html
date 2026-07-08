@@ -220,7 +220,7 @@
         <div class="toggle-group">
           <button class="toggle-btn husband active" id="btnHusband" onclick="selectWho('老公')">👨 老公</button>
           <button class="toggle-btn wife" id="btnWife" onclick="selectWho('老婆')">👩 老婆</button>
-          <button class="toggle-btn shared" id="btnShared" onclick="selectWho('共用信用卡')">💳 共用信用卡</button>
+          <button class="toggle-btn shared" id="btnShared" onclick="selectWho('共用')">💳 共用</button>
         </div>
       </div>
 
@@ -249,7 +249,7 @@
           <button class="cat-pill" data-cat="旅遊" onclick="selectCat(this)">✈️ 旅遊</button>
           <button class="cat-pill" data-cat="其他" onclick="selectCat(this)">📦 其他</button>
         </div>
-        <!-- 共用信用卡分類 -->
+        <!-- 共用分類 -->
         <div class="cat-grid hidden" id="catShared">
           <button class="cat-pill active" data-cat="大戶" onclick="selectCat(this)">🏦 大戶</button>
           <button class="cat-pill" data-cat="CUBE" onclick="selectCat(this)">🟦 CUBE</button>
@@ -282,7 +282,7 @@
           <div class="stat-value green" id="statExpense">$0</div>
         </div>
         <div class="stat-box">
-          <div class="stat-label">共用信用卡</div>
+          <div class="stat-label">共用</div>
           <div class="stat-value shared" id="statCount">$0</div>
         </div>
         <div class="stat-box">
@@ -330,7 +330,7 @@
       <button class="filter-btn active" onclick="filterRecords('全部', this)">全部</button>
       <button class="filter-btn" onclick="filterRecords('老公', this)">老公</button>
       <button class="filter-btn" onclick="filterRecords('老婆', this)">老婆</button>
-      <button class="filter-btn" onclick="filterRecords('共用信用卡', this)">共用信用卡</button>
+      <button class="filter-btn" onclick="filterRecords('共用', this)">共用</button>
     </div>
     <div class="records-list" id="recordsList">
       <div class="loading-state">載入中...</div>
@@ -415,11 +415,11 @@
     whoSelected = who;
     document.getElementById('btnHusband').classList.toggle('active', who === '老公');
     document.getElementById('btnWife').classList.toggle('active', who === '老婆');
-    document.getElementById('btnShared').classList.toggle('active', who === '共用信用卡');
+    document.getElementById('btnShared').classList.toggle('active', who === '共用');
 
     const expenseGrid = document.getElementById('catExpense');
     const sharedGrid = document.getElementById('catShared');
-    if (who === '共用信用卡') {
+    if (who === '共用') {
       expenseGrid.classList.add('hidden');
       sharedGrid.classList.remove('hidden');
       sharedGrid.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
@@ -706,7 +706,7 @@
     const totalExpense = expense.reduce((s, r) => s + Number(r.amount), 0);
     const husband = expense.filter(r => r.who === '老公').reduce((s, r) => s + Number(r.amount), 0);
     const wife = expense.filter(r => r.who === '老婆').reduce((s, r) => s + Number(r.amount), 0);
-    const shared = expense.filter(r => r.who === '共用信用卡').reduce((s, r) => s + Number(r.amount), 0);
+    const shared = expense.filter(r => r.who === '共用').reduce((s, r) => s + Number(r.amount), 0);
 
     document.getElementById('statExpense').textContent = '$' + totalExpense.toLocaleString();
     document.getElementById('statCount').textContent = '$' + shared.toLocaleString();
