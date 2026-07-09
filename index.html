@@ -13,7 +13,7 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --bg: #f5f3ee; --surface: #ffffff; --border: #e2ddd5; --text: #1a1814; --muted: #7a756c;
-    --accent: #2d6a4f; --accent-light: #e8f4ef; --accent-muted: #74b49b;
+    --accent: #ff6f47; --accent-light: #fff1ea; --accent-muted: #ffab8a;
     --income: #2563eb; --income-light: #eff6ff;
     --husband: #3d5a80; --husband-light: #e8eef5;
     --wife: #c05c7e; --wife-light: #faedf2;
@@ -24,7 +24,7 @@
 
   header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
   .logo { display: flex; align-items: center; gap: 10px; }
-  .logo-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
+  .logo-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #e60000; font-size: 18px; }
   .logo-text { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
   .logo-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
   .header-right { display: flex; align-items: center; gap: 10px; }
@@ -154,6 +154,7 @@
   .hidden { display: none !important; }
   .modal { background: var(--surface); border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
   .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 20px; }
+  .modal-desc { font-size: 13px; line-height: 1.6; color: var(--muted); margin: -8px 0 18px; }
   .modal-field { margin-bottom: 14px; }
   .modal-field label { display: block; font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
   .modal-field input, .modal-field select { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: var(--sans); background: var(--bg); color: var(--text); outline: none; -webkit-appearance: none; }
@@ -185,13 +186,14 @@
 
 <header>
   <div class="logo">
-    <div class="logo-icon">♡</div>
+    <div class="logo-icon">♥</div>
     <div>
       <div class="logo-text">夫妻記帳本</div>
       <div class="logo-sub">共同財務管理</div>
     </div>
   </div>
   <div class="header-right">
+    <button class="btn-refresh" id="settingsBtn" onclick="changeScriptUrl()" title="設定試算表連結">⚙</button>
     <button class="btn-refresh" id="refreshBtn" onclick="loadRecords()">
       <span>↻</span> 同步
     </button>
@@ -339,6 +341,20 @@
 
 </main>
 
+<div class="modal-overlay hidden" id="connectModal">
+  <div class="modal">
+    <div class="modal-title">連接你的試算表</div>
+    <p class="modal-desc">請先到你的 Google 試算表 → 擴充功能 → Apps Script，貼上提供給你的程式碼，部署為「網頁應用程式」（存取權限選「任何人」），把取得的網址貼在這裡。</p>
+    <div class="modal-field">
+      <input type="text" id="connectUrlInput" placeholder="https://script.google.com/macros/s/...">
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeConnectModal()">取消</button>
+      <button class="modal-btn save" onclick="saveConnectUrl()">儲存</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay hidden" id="editModal">
   <div class="modal">
     <div class="modal-title">編輯記錄</div>
@@ -381,7 +397,40 @@
 
 <script>
   // ★ 把你的 Apps Script 網址貼在這裡
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-84cz5WH5sDe1s6Ben8YTo9NbPRryDinTaQGvMSgtwMlT0VCaHbptro6ZqAQIj5kq/exec';
+  let SCRIPT_URL = localStorage.getItem('scriptUrl') || '';
+
+  // 確保已設定試算表連結；沒有的話開啟連接視窗，輸入後存入本機瀏覽器（localStorage）
+  // 這樣網址就不會出現在網頁原始碼裡，避免被外部人士直接看到
+  function ensureScriptUrl() {
+    if (SCRIPT_URL) return true;
+    openConnectModal();
+    return false;
+  }
+
+  function openConnectModal() {
+    document.getElementById('connectUrlInput').value = SCRIPT_URL || '';
+    document.getElementById('connectModal').classList.remove('hidden');
+  }
+
+  function closeConnectModal() {
+    document.getElementById('connectModal').classList.add('hidden');
+  }
+
+  function saveConnectUrl() {
+    const url = document.getElementById('connectUrlInput').value.trim();
+    if (!url) {
+      showToast('請輸入試算表連結網址');
+      return;
+    }
+    SCRIPT_URL = url;
+    localStorage.setItem('scriptUrl', SCRIPT_URL);
+    closeConnectModal();
+    init();
+  }
+
+  function changeScriptUrl() {
+    openConnectModal();
+  }
 
   let records = [];
   let whoSelected = '老公';
@@ -502,6 +551,11 @@
   }
 
   async function init() {
+    if (!ensureScriptUrl()) {
+      setStatus('err', '尚未設定試算表連結');
+      document.getElementById('recordsList').innerHTML = '<div class="empty-state">請點右上角 ⚙ 設定試算表連結</div>';
+      return;
+    }
     setStatus('loading', '連線中...');
 
     // 1. 先用快取立刻顯示
