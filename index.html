@@ -13,18 +13,17 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --bg: #f5f3ee; --surface: #ffffff; --border: #e2ddd5; --text: #1a1814; --muted: #7a756c;
-    --accent: #ff6f47; --accent-light: #fff1ea; --accent-muted: #ffab8a;
+    --accent: #2d6a4f; --accent-light: #e8f4ef; --accent-muted: #74b49b;
     --income: #2563eb; --income-light: #eff6ff;
     --husband: #3d5a80; --husband-light: #e8eef5;
     --wife: #c05c7e; --wife-light: #faedf2;
-    --shared: #a67c00; --shared-light: #f7f0dd;
     --danger: #c0392b; --mono: 'DM Mono', monospace; --sans: 'Noto Sans TC', sans-serif;
   }
   body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; }
 
   header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
   .logo { display: flex; align-items: center; gap: 10px; }
-  .logo-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #e60000; font-size: 18px; }
+  .logo-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
   .logo-text { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
   .logo-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
   .header-right { display: flex; align-items: center; gap: 10px; }
@@ -39,10 +38,11 @@
   .btn-refresh.spinning span { display: inline-block; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .month-tabs { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; overflow-x: auto; }
-  .month-tab { padding: 12px 18px; font-size: 13px; font-family: var(--sans); border: none; background: none; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.15s; }
-  .month-tab:hover { color: var(--text); }
-  .month-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+  .month-nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 16px; display: flex; align-items: center; justify-content: center; gap: 16px; height: 52px; }
+  .month-nav-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; color: var(--muted); transition: all 0.15s; flex-shrink: 0; }
+  .month-nav-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .month-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .month-nav-label { font-size: 15px; font-weight: 500; color: var(--text); min-width: 100px; text-align: center; }
 
   main { max-width: 960px; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
@@ -73,8 +73,7 @@
   .toggle-btn { flex: 1; padding: 9px 12px; border: none; background: var(--bg); font-family: var(--sans); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--muted); }
   .toggle-btn.husband.active { background: var(--husband-light); color: var(--husband); }
   .toggle-btn.wife.active { background: var(--wife-light); color: var(--wife); }
-  .toggle-btn.shared.active { background: var(--shared-light); color: var(--shared); }
-  .toggle-btn:not(:last-child) { border-right: 1px solid var(--border); }
+  .toggle-btn:first-child { border-right: 1px solid var(--border); }
 
   .cat-grid { display: flex; flex-wrap: wrap; gap: 6px; }
   .cat-pill { padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); font-size: 12px; font-family: var(--sans); cursor: pointer; transition: all 0.15s; color: var(--muted); }
@@ -95,7 +94,6 @@
   .stat-value.blue { color: var(--income); }
   .stat-value.husband { color: var(--husband); }
   .stat-value.wife { color: var(--wife); }
-  .stat-value.shared { color: var(--shared); }
   .stat-value.positive { color: var(--accent); }
   .stat-value.negative { color: var(--danger); }
 
@@ -130,7 +128,6 @@
   .record-who-tag { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; flex-shrink: 0; }
   .record-who-tag.husband { background: var(--husband-light); color: var(--husband); }
   .record-who-tag.wife { background: var(--wife-light); color: var(--wife); }
-  .record-who-tag.shared { background: var(--shared-light); color: var(--shared); }
   .record-cat-text { font-size: 12px; color: var(--muted); flex-shrink: 0; }
   .record-note { font-size: 13px; color: var(--text); flex: 1; }
   .record-note.empty { color: var(--muted); font-size: 12px; }
@@ -151,10 +148,8 @@
   }
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; }
   .modal-overlay.hidden { display: none; }
-  .hidden { display: none !important; }
   .modal { background: var(--surface); border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
   .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 20px; }
-  .modal-desc { font-size: 13px; line-height: 1.6; color: var(--muted); margin: -8px 0 18px; }
   .modal-field { margin-bottom: 14px; }
   .modal-field label { display: block; font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
   .modal-field input, .modal-field select { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: var(--sans); background: var(--bg); color: var(--text); outline: none; -webkit-appearance: none; }
@@ -186,14 +181,13 @@
 
 <header>
   <div class="logo">
-    <div class="logo-icon">♥</div>
+    <div class="logo-icon">♡</div>
     <div>
       <div class="logo-text">夫妻記帳本</div>
       <div class="logo-sub">共同財務管理</div>
     </div>
   </div>
   <div class="header-right">
-    <button class="btn-refresh" id="settingsBtn" onclick="changeScriptUrl()" title="設定試算表連結">⚙</button>
     <button class="btn-refresh" id="refreshBtn" onclick="loadRecords()">
       <span>↻</span> 同步
     </button>
@@ -204,7 +198,11 @@
   </div>
 </header>
 
-<div class="month-tabs" id="monthTabs"></div>
+<div class="month-nav">
+  <button class="month-nav-btn" id="monthPrev" onclick="prevMonth()">‹</button>
+  <span class="month-nav-label" id="monthNavLabel">—</span>
+  <button class="month-nav-btn" id="monthNext" onclick="nextMonth()">›</button>
+</div>
 
 <main>
 
@@ -222,7 +220,6 @@
         <div class="toggle-group">
           <button class="toggle-btn husband active" id="btnHusband" onclick="selectWho('老公')">👨 老公</button>
           <button class="toggle-btn wife" id="btnWife" onclick="selectWho('老婆')">👩 老婆</button>
-          <button class="toggle-btn shared" id="btnShared" onclick="selectWho('共用')">💳 共用</button>
         </div>
       </div>
 
@@ -243,19 +240,13 @@
         <!-- 支出分類 -->
         <div class="cat-grid" id="catExpense">
           <button class="cat-pill active" data-cat="奕安" onclick="selectCat(this)">👶 奕安</button>
-          <button class="cat-pill" data-cat="餐食" onclick="selectCat(this)">🍽 餐食</button>
+          <button class="cat-pill" data-cat="晚餐" onclick="selectCat(this)">🍽 晚餐</button>
           <button class="cat-pill" data-cat="點心" onclick="selectCat(this)">🧁 點心</button>
           <button class="cat-pill" data-cat="買菜" onclick="selectCat(this)">🥦 買菜</button>
           <button class="cat-pill" data-cat="購物" onclick="selectCat(this)">🛍 購物</button>
           <button class="cat-pill" data-cat="交通" onclick="selectCat(this)">🚗 交通</button>
           <button class="cat-pill" data-cat="旅遊" onclick="selectCat(this)">✈️ 旅遊</button>
           <button class="cat-pill" data-cat="其他" onclick="selectCat(this)">📦 其他</button>
-        </div>
-        <!-- 共用分類 -->
-        <div class="cat-grid hidden" id="catShared">
-          <button class="cat-pill active" data-cat="大戶" onclick="selectCat(this)">🏦 大戶</button>
-          <button class="cat-pill" data-cat="CUBE" onclick="selectCat(this)">🟦 CUBE</button>
-          <button class="cat-pill" data-cat="禮券" onclick="selectCat(this)">🎫 禮券</button>
         </div>
       </div>
 
@@ -284,8 +275,8 @@
           <div class="stat-value green" id="statExpense">$0</div>
         </div>
         <div class="stat-box">
-          <div class="stat-label">共用</div>
-          <div class="stat-value shared" id="statCount">$0</div>
+          <div class="stat-label">筆數</div>
+          <div class="stat-value" id="statCount">0 筆</div>
         </div>
         <div class="stat-box">
           <div class="stat-label">老公支出</div>
@@ -332,7 +323,6 @@
       <button class="filter-btn active" onclick="filterRecords('全部', this)">全部</button>
       <button class="filter-btn" onclick="filterRecords('老公', this)">老公</button>
       <button class="filter-btn" onclick="filterRecords('老婆', this)">老婆</button>
-      <button class="filter-btn" onclick="filterRecords('共用', this)">共用</button>
     </div>
     <div class="records-list" id="recordsList">
       <div class="loading-state">載入中...</div>
@@ -340,20 +330,6 @@
   </div>
 
 </main>
-
-<div class="modal-overlay hidden" id="connectModal">
-  <div class="modal">
-    <div class="modal-title">連接你的試算表</div>
-    <p class="modal-desc">請先到你的 Google 試算表 → 擴充功能 → Apps Script，貼上提供給你的程式碼，部署為「網頁應用程式」（存取權限選「任何人」），把取得的網址貼在這裡。</p>
-    <div class="modal-field">
-      <input type="text" id="connectUrlInput" placeholder="https://script.google.com/macros/s/...">
-    </div>
-    <div class="modal-actions">
-      <button class="modal-btn cancel" onclick="closeConnectModal()">取消</button>
-      <button class="modal-btn save" onclick="saveConnectUrl()">儲存</button>
-    </div>
-  </div>
-</div>
 
 <div class="modal-overlay hidden" id="editModal">
   <div class="modal">
@@ -370,16 +346,13 @@
       <label>分類</label>
       <select id="editCategory">
         <option>奕安</option>
-        <option>餐食</option>
+        <option>晚餐</option>
         <option>點心</option>
         <option>買菜</option>
         <option>購物</option>
         <option>交通</option>
         <option>旅遊</option>
         <option>其他</option>
-        <option>大戶</option>
-        <option>CUBE</option>
-        <option>禮券</option>
       </select>
     </div>
     <div class="modal-field">
@@ -397,40 +370,7 @@
 
 <script>
   // ★ 把你的 Apps Script 網址貼在這裡
-  let SCRIPT_URL = localStorage.getItem('scriptUrl') || '';
-
-  // 確保已設定試算表連結；沒有的話開啟連接視窗，輸入後存入本機瀏覽器（localStorage）
-  // 這樣網址就不會出現在網頁原始碼裡，避免被外部人士直接看到
-  function ensureScriptUrl() {
-    if (SCRIPT_URL) return true;
-    openConnectModal();
-    return false;
-  }
-
-  function openConnectModal() {
-    document.getElementById('connectUrlInput').value = SCRIPT_URL || '';
-    document.getElementById('connectModal').classList.remove('hidden');
-  }
-
-  function closeConnectModal() {
-    document.getElementById('connectModal').classList.add('hidden');
-  }
-
-  function saveConnectUrl() {
-    const url = document.getElementById('connectUrlInput').value.trim();
-    if (!url) {
-      showToast('請輸入試算表連結網址');
-      return;
-    }
-    SCRIPT_URL = url;
-    localStorage.setItem('scriptUrl', SCRIPT_URL);
-    closeConnectModal();
-    init();
-  }
-
-  function changeScriptUrl() {
-    openConnectModal();
-  }
+  const SCRIPT_URL = 'https://script.google.com/macros/s/請貼上你的網址/exec';
 
   let records = [];
   let whoSelected = '老公';
@@ -464,23 +404,6 @@
     whoSelected = who;
     document.getElementById('btnHusband').classList.toggle('active', who === '老公');
     document.getElementById('btnWife').classList.toggle('active', who === '老婆');
-    document.getElementById('btnShared').classList.toggle('active', who === '共用');
-
-    const expenseGrid = document.getElementById('catExpense');
-    const sharedGrid = document.getElementById('catShared');
-    if (who === '共用') {
-      expenseGrid.classList.add('hidden');
-      sharedGrid.classList.remove('hidden');
-      sharedGrid.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
-      sharedGrid.querySelector('.cat-pill').classList.add('active');
-      catSelected = sharedGrid.querySelector('.cat-pill').dataset.cat;
-    } else {
-      sharedGrid.classList.add('hidden');
-      expenseGrid.classList.remove('hidden');
-      expenseGrid.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
-      expenseGrid.querySelector('.cat-pill').classList.add('active');
-      catSelected = expenseGrid.querySelector('.cat-pill').dataset.cat;
-    }
   }
 
   function selectCat(el) {
@@ -551,11 +474,6 @@
   }
 
   async function init() {
-    if (!ensureScriptUrl()) {
-      setStatus('err', '尚未設定試算表連結');
-      document.getElementById('recordsList').innerHTML = '<div class="empty-state">請點右上角 ⚙ 設定試算表連結</div>';
-      return;
-    }
     setStatus('loading', '連線中...');
 
     // 1. 先用快取立刻顯示
@@ -601,9 +519,21 @@
   }
 
   function renderMonthTabs() {
-    document.getElementById('monthTabs').innerHTML = availableMonths.map(m =>
-      `<button class="month-tab ${m === currentMonth ? 'active' : ''}" onclick="switchMonth('${m}')">${m}</button>`
-    ).join('');
+    const idx = availableMonths.indexOf(currentMonth);
+    const label = currentMonth.replace('/', '年') + '月';
+    document.getElementById('monthNavLabel').textContent = label;
+    document.getElementById('monthPrev').disabled = idx >= availableMonths.length - 1;
+    document.getElementById('monthNext').disabled = idx <= 0;
+  }
+
+  async function prevMonth() {
+    const idx = availableMonths.indexOf(currentMonth);
+    if (idx < availableMonths.length - 1) await switchMonth(availableMonths[idx + 1]);
+  }
+
+  async function nextMonth() {
+    const idx = availableMonths.indexOf(currentMonth);
+    if (idx > 0) await switchMonth(availableMonths[idx - 1]);
   }
 
   async function switchMonth(month) {
@@ -611,7 +541,6 @@
     renderMonthTabs();
     document.getElementById('statsTitle').textContent = month + ' 統計';
 
-    // 先顯示快取
     const cached = loadCache(month);
     if (cached) {
       records = cached;
@@ -622,7 +551,6 @@
       document.getElementById('recordsList').innerHTML = '<div class="loading-state">載入中...</div>';
     }
 
-    // 背景更新
     await loadRecords(false);
   }
 
@@ -727,7 +655,7 @@
         <div class="record-row">
           <div class="record-row-top">
             <span class="record-date">${formatDate(r.date)}</span>
-            <span class="record-who-tag ${r.who === '老公' ? 'husband' : r.who === '老婆' ? 'wife' : 'shared'}">${r.who}</span>
+            <span class="record-who-tag ${r.who === '老公' ? 'husband' : 'wife'}">${r.who}</span>
             <span class="record-cat-text">${r.category}</span>
             <div class="record-hover-actions" style="margin-left:auto;">
               <button class="hover-btn edit" onclick="openEdit('${r.id}')">✎ 編輯</button>
@@ -760,10 +688,9 @@
     const totalExpense = expense.reduce((s, r) => s + Number(r.amount), 0);
     const husband = expense.filter(r => r.who === '老公').reduce((s, r) => s + Number(r.amount), 0);
     const wife = expense.filter(r => r.who === '老婆').reduce((s, r) => s + Number(r.amount), 0);
-    const shared = expense.filter(r => r.who === '共用').reduce((s, r) => s + Number(r.amount), 0);
 
     document.getElementById('statExpense').textContent = '$' + totalExpense.toLocaleString();
-    document.getElementById('statCount').textContent = '$' + shared.toLocaleString();
+    document.getElementById('statCount').textContent = records.length + ' 筆';
     document.getElementById('statHusband').textContent = '$' + husband.toLocaleString();
     document.getElementById('statWife').textContent = '$' + wife.toLocaleString();
 
@@ -784,7 +711,7 @@
     wifeEl.textContent = (wifeTransfer < 0 ? '-$' : '$') + Math.abs(wifeTransfer).toLocaleString();
     wifeEl.style.color = wifeTransfer < 0 ? 'var(--danger)' : 'var(--wife)';
 
-    const cats = ['奕安','餐食','點心','買菜','購物','交通','旅遊','其他','大戶','CUBE','禮券'];
+    const cats = ['奕安','晚餐','點心','買菜','購物','交通','旅遊','其他'];
     const breakdown = document.getElementById('catBreakdown');
     const rows = cats.map(cat => {
       const amt = expense.filter(r => r.category === cat).reduce((s, r) => s + Number(r.amount), 0);
