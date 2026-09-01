@@ -39,11 +39,11 @@
   .btn-refresh.spinning span { display: inline-block; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .month-nav { display: flex; align-items: center; justify-content: center; gap: 18px; background: #1c1c1c; margin: 16px 24px 0; padding: 10px 18px; border-radius: 14px; }
-  .month-nav-btn { width: 30px; height: 30px; border-radius: 9px; background: #2e2e2e; border: none; color: #fff; font-size: 16px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
-  .month-nav-btn:hover { background: #3d3d3d; }
-  .month-nav-btn:disabled { opacity: 0.3; cursor: default; background: #2e2e2e; }
-  .month-nav-label { color: #fff; font-weight: 700; font-size: 15px; min-width: 100px; text-align: center; }
+  .month-nav { display: flex; align-items: center; justify-content: center; gap: 18px; background: var(--surface); border: 1px solid var(--border); margin: 16px 24px 0; padding: 10px 18px; border-radius: 14px; }
+  .month-nav-btn { width: 30px; height: 30px; border-radius: 9px; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-size: 16px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .month-nav-btn:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+  .month-nav-btn:disabled { opacity: 0.35; cursor: default; background: var(--bg); border-color: var(--border); color: var(--muted); }
+  .month-nav-label { color: var(--text); font-weight: 700; font-size: 15px; min-width: 100px; text-align: center; }
 
   main { max-width: 960px; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
