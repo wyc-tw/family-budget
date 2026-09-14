@@ -1,12 +1,18 @@
 // 夫妻記帳本 — Service Worker
 // 每次改版時更新這個版本號，讓舊快取自動清除
-const VERSION = 'v1';
+const VERSION = 'v3';
 const CACHE_NAME = 'budget-' + VERSION;
 
 // 需要快取的靜態資源
 const STATIC_ASSETS = [
   './',
   './index.html',
+  './manifest.json',
+  './icons/favicon.ico',
+  './icons/apple-touch-icon.png',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/icon-512-maskable.png',
   'https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap',
 ];
 
