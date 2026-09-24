@@ -31,10 +31,10 @@
   .logo-text { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
   .logo-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
   .header-right { display: flex; align-items: center; gap: 10px; }
-  .header-badge { font-family: var(--mono); font-size: 11px; background: var(--accent-light); color: var(--accent); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--accent-muted); display: flex; align-items: center; gap: 5px; }
-  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; display: inline-block; }
-  .status-dot.ok { background: var(--accent); }
-  .status-dot.err { background: var(--danger); }
+  .header-badge { background: var(--surface); width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
+  .status-dot { width: 9px; height: 9px; border-radius: 50%; background: #ccc; display: inline-block; }
+  .status-dot.ok { background: #2ecc71; }
+  .status-dot.err { background: #e74c3c; }
   .status-dot.loading { background: #f59e0b; animation: pulse 1s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
   .btn-refresh { padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); font-size: 12px; font-family: var(--sans); cursor: pointer; color: var(--muted); transition: all 0.15s; display: flex; align-items: center; gap: 4px; }
@@ -191,7 +191,8 @@
     .logo-sub { font-size: 10px; white-space: nowrap; }
     .header-right { gap: 6px; flex-shrink: 0; }
     .btn-refresh { padding: 4px 8px; font-size: 11px; white-space: nowrap; }
-    .header-badge { font-size: 9px; padding: 3px 7px; white-space: nowrap; }
+    .header-badge { width: 26px; height: 26px; }
+    .status-dot { width: 8px; height: 8px; }
   }
 </style>
 </head>
@@ -207,12 +208,11 @@
   </div>
   <div class="header-right">
     <button class="btn-refresh" id="settingsBtn" onclick="changeScriptUrl()" title="設定試算表連結">⚙</button>
-    <button class="btn-refresh" id="refreshBtn" onclick="loadRecords()">
-      <span>↻</span> 同步
+    <button class="btn-refresh" id="refreshBtn" onclick="loadRecords()" title="同步">
+      <span>↻</span>
     </button>
-    <div class="header-badge">
+    <div class="header-badge" id="statusBadge" title="連線中...">
       <span class="status-dot" id="statusDot"></span>
-      <span id="statusText">連線中...</span>
     </div>
   </div>
 </header>
@@ -694,7 +694,7 @@
 
   function setStatus(type, text) {
     document.getElementById('statusDot').className = 'status-dot ' + type;
-    document.getElementById('statusText').textContent = text;
+    document.getElementById('statusBadge').title = text;
   }
 
   async function submitRecord() {
